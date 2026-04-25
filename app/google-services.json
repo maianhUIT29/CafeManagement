@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "898360590911",
+    "project_id": "cafemanagement-5e518",
+    "storage_bucket": "cafemanagement-5e518.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898360590911:android:2a7c57b76862119884ee8a",
+        "android_client_info": {
+          "package_name": "com.example.cafemanagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuwC19aaUi02DBczavN8v2wo_h59KwEg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
