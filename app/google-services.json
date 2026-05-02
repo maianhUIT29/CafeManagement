@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "898360590911",
+    "firebase_url": "https://cafemanagement-5e518-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "cafemanagement-5e518",
     "storage_bucket": "cafemanagement-5e518.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.cafemanagement"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "898360590911-e1u43api0rtdd5mjbvvv6ucs91a53g8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cafemanagement",
+            "certificate_hash": "7fc6b0c18c86e655364c4f56c23275cb80c29d2c"
+          }
+        },
+        {
+          "client_id": "898360590911-95t13egj8ee5nvtf12hkaa6m1ijhgkuj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCuwC19aaUi02DBczavN8v2wo_h59KwEg4"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "898360590911-95t13egj8ee5nvtf12hkaa6m1ijhgkuj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
