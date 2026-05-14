@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
+        android:name=".AppManager"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CafeManagement">
 
+        <!-- Khai báo LoginActivity là màn hình khởi động chính -->
         <activity
             android:name=".view.LoginActivity"
             android:exported="true">
@@ -23,8 +24,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Khai báo các màn hình khác đã tạo -->
         <activity
-            android:name=".view.MainActivity"
+            android:name=".view.OrderSetupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.MenuActivity"
             android:exported="false" />
 
         <activity
@@ -35,9 +40,50 @@
             android:name=".view.ForgotPasswordActivity"
             android:exported="false" />
 
-        <activity android:name=".view.AdminActivity" android:exported="false" />
-        <activity android:name=".view.CashierActivity" android:exported="false" />
-        <activity android:name=".view.BaristaActivity" android:exported="false" />
+        <activity android:name=".view.AdminActivity"
+            android:exported="false" />
+
+        <activity android:name=".view.CashierActivity"
+            android:exported="false" />
+
+        <activity android:name=".view.BaristaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.DrinkCustomizeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.BasketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.OrderStatusActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.CheckoutActivity"
+            android:exported="true"
+            android:label="Merchant Demo"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="demozpdk"
+                    android:host="app" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="vnpay" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
