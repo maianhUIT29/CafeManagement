@@ -1,6 +1,7 @@
 package com.example.cafemanagement.model;
 
 public class UserModel {
+    private String userId;
     private String name;
     private String phone; // Chuyển sang kiểu String để giữ số 0 ở đầu
     private String email;
@@ -13,6 +14,9 @@ public class UserModel {
     }
 
     // Getter và Setter
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

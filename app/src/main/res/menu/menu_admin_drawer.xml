@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_admin_dashboard"
+            android:icon="@android:drawable/ic_menu_compass"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_admin_tables"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Quản lý bàn" />
+        <item
+            android:id="@+id/nav_admin_menu"
+            android:icon="@android:drawable/ic_menu_sort_by_size"
+            android:title="Quản lý thực đơn" />
+        <item
+            android:id="@+id/nav_admin_staff"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="Quản lý nhân sự" />
+    </group>
+
+    <item android:title="Hệ thống">
+        <menu>
+            <item
+                android:id="@+id/nav_admin_logout"
+                android:icon="@android:drawable/ic_lock_power_off"
+                android:title="Đăng xuất" />
+        </menu>
+    </item>
+</menu>

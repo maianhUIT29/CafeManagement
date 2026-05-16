@@ -43,6 +43,15 @@
         <activity android:name=".view.AdminActivity"
             android:exported="false" />
 
+        <activity android:name=".view.AdminStaffActivity"
+            android:exported="false" />
+
+        <activity android:name=".view.AdminMenuActivity"
+            android:exported="false" />
+
+        <activity android:name=".view.AdminTableActivity"
+            android:exported="false" />
+
         <activity android:name=".view.CashierActivity"
             android:exported="false" />
 

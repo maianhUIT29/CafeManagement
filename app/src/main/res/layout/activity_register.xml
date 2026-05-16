@@ -20,9 +20,8 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="40dp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal" />
 
-        <!-- Ô nhập Họ tên -->
         <EditText
             android:id="@+id/edtRegName"
             android:layout_width="match_parent"
@@ -30,9 +29,9 @@
             android:layout_marginTop="32dp"
             android:hint="Họ và tên"
             android:paddingHorizontal="16dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:inputType="textPersonName" />
 
-        <!-- Ô nhập SĐT -->
         <EditText
             android:id="@+id/edtRegPhone"
             android:layout_width="match_parent"
@@ -43,30 +42,26 @@
             android:paddingHorizontal="16dp"
             android:textSize="14sp" />
 
-        <!-- Ô nhập Email -->
         <EditText
             android:id="@+id/edtRegEmail"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
-            android:hint="Email (không bắt buộc)"
+            android:hint="Email"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp"
             android:textSize="14sp" />
 
-        <!-- Ô nhập Mật khẩu -->
         <EditText
             android:id="@+id/edtRegPassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
-
             android:hint="Mật khẩu"
             android:inputType="textPassword"
             android:paddingHorizontal="16dp"
             android:textSize="14sp" />
 
-        <!-- Nút Đăng ký -->
         <Button
             android:id="@+id/btnRegisterSubmit"
             android:layout_width="match_parent"

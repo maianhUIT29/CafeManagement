@@ -34,8 +34,39 @@ public class CategoryRepository {
                 data.setValue(list);
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { data.setValue(null); }
+            public void onCancelled(@NonNull DatabaseError error) {
+                FirebaseHelper.logDatabaseError("CategoryRepository.getCategories", error);
+                data.setValue(null);
+            }
         });
         return data;
+    }
+
+    public void addCategory(CategoryModel category, RepositoryCallback callback) {
+        String key = categoriesRef.push().getKey();
+        if (key == null) {
+            callback.onError("Không tạo được ID danh mục");
+            return;
+        }
+        category.setId(key);
+        categoriesRef.child(key).setValue(category)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    public void updateCategory(CategoryModel category, RepositoryCallback callback) {
+        if (category.getId() == null || category.getId().isEmpty()) {
+            callback.onError("Thiếu ID danh mục");
+            return;
+        }
+        categoriesRef.child(category.getId()).setValue(category)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    public void deleteCategory(String categoryId, RepositoryCallback callback) {
+        categoriesRef.child(categoryId).removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 }

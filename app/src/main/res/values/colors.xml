@@ -2,4 +2,41 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="coffee_primary">#5D4037</color>
+    <color name="coffee_dark">#3E2723</color>
+    <color name="coffee_accent">#FFD54F</color>
+    <color name="coffee_bg">#F8F9FA</color>
+    <color name="coffee_card">#FFFFFF</color>
+    <color name="text_secondary">#8D6E63</color>
+    
+    <!-- Modern Admin Colors -->
+    <color name="admin_bg">#F8F9FA</color>
+    <color name="admin_card_bg">#FFFFFF</color>
+    <color name="admin_primary">#6D4C41</color>
+    <color name="admin_surface">#F2EBE4</color>
+    
+    <!-- Legacy Admin Colors (Required for other screens) -->
+    <color name="admin_card">#FFFFFFFF</color>
+    <color name="admin_stroke">#E7DCD2</color>
+    <color name="admin_text_primary">#2F211C</color>
+    <color name="admin_text_secondary">#8D6E63</color>
+    <color name="admin_primary_soft">#EFE4DC</color>
+    <color name="admin_success">#2E7D32</color>
+    <color name="admin_success_soft">#E6F4EA</color>
+    <color name="admin_danger">#C62828</color>
+    <color name="admin_danger_soft">#FCE8E6</color>
+    <color name="chip_table_bg">#FFF8F1</color>
+    
+    <!-- Stat Colors -->
+    <color name="stat_blue">#E3F2FD</color>
+    <color name="stat_blue_icon">#1976D2</color>
+    <color name="stat_green">#E8F5E9</color>
+    <color name="stat_green_icon">#388E3C</color>
+    <color name="stat_orange">#FFF3E0</color>
+    <color name="stat_orange_icon">#F57C00</color>
+    <color name="stat_purple">#F3E5F5</color>
+    <color name="stat_purple_icon">#7B1FA2</color>
+    
+    <color name="header_subtitle">#E0E0E0</color>
+    <color name="chart_grid">#F0F0F0</color>
 </resources>
