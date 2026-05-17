@@ -30,37 +30,41 @@ public class ConfirmFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle args = getArguments();
-        String orderId       = args != null ? args.getString("orderId", "#---")    : "#---";
-        String payMethod     = args != null ? args.getString("paymentMethod", "")  : "";
-        int    total         = args != null ? args.getInt("total", 0)              : 0;
+        Bundle args      = getArguments();
+        String orderId   = args != null ? args.getString("orderId", "#---")   : "#---";
+        String payMethod = args != null ? args.getString("paymentMethod", "") : "";
+        int    total     = args != null ? args.getInt("total", 0)             : 0;
 
-        TextView tvOrderId    = view.findViewById(R.id.tv_confirm_order_id);
-        TextView tvPayMethod  = view.findViewById(R.id.tv_confirm_pay_method);
-        TextView tvTotal      = view.findViewById(R.id.tv_confirm_total);
+        TextView tvOrderId   = view.findViewById(R.id.tv_confirm_order_id);
+        TextView tvPayMethod = view.findViewById(R.id.tv_confirm_pay_method);
+        TextView tvTotal     = view.findViewById(R.id.tv_confirm_total);
 
-        tvOrderId.setText("#" + orderId.substring(Math.max(0, orderId.length() - 6)).toUpperCase());
-        tvPayMethod.setText("Tiền mặt".equals(payMethod) || "CASH".equals(payMethod)
-                ? "Tiền mặt" : "Chuyển khoản");
-        tvTotal.setText(NumberFormat.getInstance(new Locale("vi", "VN")).format(total) + "đ");
+        // Hiển thị ID rút gọn
+        tvOrderId.setText("#" + orderId
+                .substring(Math.max(0, orderId.length() - 6))
+                .toUpperCase());
 
-        // Back to dashboard
+        tvPayMethod.setText(
+                "CASH".equals(payMethod) || "Tiền mặt".equals(payMethod)
+                        ? "Tiền mặt" : "Chuyển khoản");
+
+        tvTotal.setText(
+                NumberFormat.getInstance(new Locale("vi", "VN")).format(total) + "đ");
+
+        // Nút quay về dashboard
         view.findViewById(R.id.btn_back_dashboard).setOnClickListener(v -> {
-            // Clear back stack and go home
-            requireActivity().getSupportFragmentManager()
-                    .popBackStack(null,
-                            androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            requireActivity().getSupportFragmentManager().popBackStack(
+                    null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
             ((CashierActivity) requireActivity())
                     .navigateTo(CashierActivity.SCREEN_DASHBOARD, null, false);
         });
 
-        // Tạo đơn mới
+        // Nút tạo đơn mới
         view.findViewById(R.id.btn_new_order_again).setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .popBackStack(null,
-                            androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            requireActivity().getSupportFragmentManager().popBackStack(
+                    null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
             ((CashierActivity) requireActivity())
-                    .navigateTo(CashierActivity.SCREEN_SELECT_TABLE, null, true);
+                    .navigateTo(CashierActivity.SCREEN_ORDER_TYPE, null, false);
         });
     }
 }
