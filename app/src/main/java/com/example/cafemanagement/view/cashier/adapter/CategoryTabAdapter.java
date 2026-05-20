@@ -58,4 +58,11 @@ public class CategoryTabAdapter extends RecyclerView.Adapter<CategoryTabAdapter.
         TextView tvName;
         VH(View v) { super(v); tvName = v.findViewById(R.id.tv_cat_name); }
     }
+    public void updateData(List<CategoryModel> newList, List<String> newIds) {
+        this.cats.clear();
+        this.cats.addAll(newList);
+        this.ids.clear();
+        this.ids.addAll(newIds);
+        notifyDataSetChanged();
+    }
 }

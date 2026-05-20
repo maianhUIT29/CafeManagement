@@ -79,4 +79,11 @@ public class ActiveOrderAdapter extends RecyclerView.Adapter<ActiveOrderAdapter.
             tvStatus = v.findViewById(R.id.tv_order_status);
         }
     }
+    public void updateData(List<OrderModel> newOrders, List<String> newIds) {
+        orders.clear();
+        orders.addAll(newOrders);
+        ids.clear();
+        ids.addAll(newIds);
+        notifyDataSetChanged();
+    }
 }

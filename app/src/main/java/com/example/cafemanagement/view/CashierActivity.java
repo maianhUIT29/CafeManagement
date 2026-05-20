@@ -22,6 +22,7 @@ import com.example.cafemanagement.view.cashier.OrderTypeFragment;
 import com.example.cafemanagement.view.cashier.PaymentFragment;
 import com.example.cafemanagement.view.cashier.SelectTableFragment;
 import com.example.cafemanagement.view.cashier.ShiftFragment;
+import com.example.cafemanagement.view.cashier.ShiftReportFragment;
 import com.example.cafemanagement.view.cashier.TableManagementFragment;
 
 public class CashierActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class CashierActivity extends AppCompatActivity {
     public static final String SCREEN_PAYMENT          = "payment";
     public static final String SCREEN_CONFIRM          = "confirm";
     public static final String SCREEN_SHIFT            = "shift";
+    public static final String SCREEN_SHIFT_REPORT     = "shift_report";   // MỚI
     public static final String SCREEN_ORDER_LIST       = "order_list";
     public static final String SCREEN_TABLE_MANAGEMENT = "table_management";
 
@@ -86,7 +88,6 @@ public class CashierActivity extends AppCompatActivity {
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
 
                 if (backStackCount <= 1) {
-                    // Sắp về Dashboard → reset toolbar + bottomNav
                     updateToolbar(SCREEN_DASHBOARD, "");
                     updateBottomNavVisibility(SCREEN_DASHBOARD);
                     highlightTab(currentTab);
@@ -128,7 +129,6 @@ public class CashierActivity extends AppCompatActivity {
         }
     }
 
-    // Navigate dùng cho tab — fade, không addToBackStack
     private void navigateTab(String screen) {
         Fragment fragment;
 
@@ -149,8 +149,8 @@ public class CashierActivity extends AppCompatActivity {
     }
 
     private void highlightTab(int activeTab) {
-        int activeColor   = getResources().getColor(R.color.accent_brown,   getTheme());
-        int inactiveColor = getResources().getColor(R.color.text_secondary,  getTheme());
+        int activeColor   = getResources().getColor(R.color.accent_brown,  getTheme());
+        int inactiveColor = getResources().getColor(R.color.text_secondary, getTheme());
         navLabelPos.setTextColor(   activeTab == TAB_POS    ? activeColor : inactiveColor);
         navLabelOrders.setTextColor(activeTab == TAB_ORDERS ? activeColor : inactiveColor);
         navLabelTables.setTextColor(activeTab == TAB_TABLES ? activeColor : inactiveColor);
@@ -197,6 +197,10 @@ public class CashierActivity extends AppCompatActivity {
                 fragment = new ShiftFragment();
                 title    = "";
                 break;
+            case SCREEN_SHIFT_REPORT:                   // MỚI
+                fragment = new ShiftReportFragment();
+                title    = "Báo cáo ca";
+                break;
             case SCREEN_ORDER_LIST:
                 fragment = new OrderListFragment();
                 title    = "";
@@ -239,6 +243,7 @@ public class CashierActivity extends AppCompatActivity {
         boolean showToolbar = !screen.equals(SCREEN_DASHBOARD)
                 && !screen.equals(SCREEN_CONFIRM)
                 && !screen.equals(SCREEN_SHIFT)
+                && !screen.equals(SCREEN_SHIFT_REPORT)   // report tự có toolbar riêng
                 && !screen.equals(SCREEN_ORDER_LIST)
                 && !screen.equals(SCREEN_TABLE_MANAGEMENT)
                 && !screen.equals(SCREEN_ORDER_TYPE);
@@ -251,7 +256,8 @@ public class CashierActivity extends AppCompatActivity {
                 || screen.equals(SCREEN_MENU)
                 || screen.equals(SCREEN_CUSTOMIZE)
                 || screen.equals(SCREEN_PAYMENT)
-                || screen.equals(SCREEN_CONFIRM);
+                || screen.equals(SCREEN_CONFIRM)
+                || screen.equals(SCREEN_SHIFT_REPORT);   // MỚI: ẩn bottom nav khi xem report
         bottomNav.setVisibility(hideBottomNav ? View.GONE : View.VISIBLE);
     }
 

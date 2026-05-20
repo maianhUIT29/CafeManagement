@@ -97,4 +97,11 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.VH> {
             tvStatus = v.findViewById(R.id.tv_table_status);
         }
     }
+    public void updateData(List<TableModel> newTables, List<String> newIds) {
+        this.tables.clear();      // tên field thực tế trong TableAdapter
+        this.tables.addAll(newTables);
+        this.ids.clear();
+        this.ids.addAll(newIds);
+        notifyDataSetChanged();
+    }
 }

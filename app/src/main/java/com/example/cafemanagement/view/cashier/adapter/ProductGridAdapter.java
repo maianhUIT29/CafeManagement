@@ -69,4 +69,11 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             tvPrice   = v.findViewById(R.id.tv_product_price);
         }
     }
+    public void updateData(List<ProductModel> newList, List<String> newIds) {
+        this.products.clear();
+        this.products.addAll(newList);
+        this.ids.clear();
+        this.ids.addAll(newIds);
+        notifyDataSetChanged();
+    }
 }
