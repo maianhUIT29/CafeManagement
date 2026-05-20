@@ -7,7 +7,10 @@ public class ProductModel {
     private String productId;
     private String categoryId;
     private String name;
+    private String description;
+    private String imageUrl;
     private int price;
+    private boolean available;
     private String imageUrl;
     private String description;
     private Options options;
@@ -27,6 +30,10 @@ public class ProductModel {
         public void setSizes(Map<String, Integer> sizes) { this.sizes = sizes; }
         public List<Integer> getSugar() { return sugar; }
         public void setSugar(List<Integer> sugar) { this.sugar = sugar; }
+
+        public List<Integer> getIce() { return ice; }
+        public void setIce(List<Integer> ice) { this.ice = ice; }
+
         public List<Integer> getIce() { return ice; }
         public void setIce(List<Integer> ice) { this.ice = ice; }
         public Map<String, Integer> getToppings() { return toppings; }
@@ -40,6 +47,19 @@ public class ProductModel {
     public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
+
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
+
     public int getPrice() { return price; }
     public void setPrice(int price) { this.price = price; }
     public String getImageUrl() { return imageUrl; }

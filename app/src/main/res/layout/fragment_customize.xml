@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Product image -->
+        <ImageView
+            android:id="@+id/iv_product_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/ic_coffee_placeholder" />
+
+        <!-- Info + options -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/tv_product_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/accent_brown"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Size -->
+            <TextView
+                android:id="@+id/label_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kích cỡ"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_sizes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Sugar -->
+            <TextView
+                android:id="@+id/label_sugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Độ ngọt"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_sugar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Ice -->
+            <TextView
+                android:id="@+id/label_ice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lượng đá"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_ice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Toppings -->
+            <TextView
+                android:id="@+id/label_topping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Topping"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_toppings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Quantity + Add button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Qty control -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_qty_control"
+                    android:padding="4dp"
+                    android:layout_marginEnd="12dp">
+
+                    <ImageButton
+                        android:id="@+id/btn_qty_minus"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_minus"
+                        android:contentDescription="Giảm" />
+
+                    <TextView
+                        android:id="@+id/tv_qty_count"
+                        android:layout_width="36dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageButton
+                        android:id="@+id/btn_qty_plus"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_plus"
+                        android:contentDescription="Tăng" />
+                </LinearLayout>
+
+                <!-- Add to cart -->
+                <Button
+                    android:id="@+id/btn_add_to_cart"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Thêm vào giỏ"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_btn_primary"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+            <!-- Bottom padding for scroll -->
+            <View android:layout_width="match_parent" android:layout_height="24dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

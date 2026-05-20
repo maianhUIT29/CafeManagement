@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.CafeManagement" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/accent_brown</item>
+        <item name="colorPrimaryVariant">@color/accent_brown_light</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent_yellow</item>
+        <item name="colorOnSecondary">@color/text_primary</item>
     </style>
     <style name="RoundedSmall" parent="">
         <item name="cornerFamily">rounded</item>
