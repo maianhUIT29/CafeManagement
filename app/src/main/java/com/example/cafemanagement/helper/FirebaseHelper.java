@@ -20,8 +20,7 @@ public class FirebaseHelper {
     public static FirebaseDatabase getDatabaseInstance() {
         if (mDatabase == null) {
             mDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
-            // Cho phép lưu trữ dữ liệu ngoại tuyến để ứng dụng mượt mà hơn
-            mDatabase.setPersistenceEnabled(true);
+            // ĐÃ XÓA LỆNH setPersistenceEnabled Ở ĐÂY
         }
         return mDatabase;
     }

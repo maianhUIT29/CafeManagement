@@ -1,6 +1,7 @@
 package com.example.cafemanagement.model;
 
 public class CategoryModel {
+    private String id;
     private String name;
     private int sortOrder;
 
@@ -12,7 +13,12 @@ public class CategoryModel {
         this.name = name;
         this.sortOrder = sortOrder;
     }
-
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
     // Getter và Setter
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
