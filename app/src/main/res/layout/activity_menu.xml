@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FDFDFD">
+
+    <!-- Khu vực Header chứa Tiêu đề, Tên bàn và Danh mục món ăn -->
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="The Artisanal Ledger"
+            android:textColor="#1A1A1A"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="#EEEEEE"
+            app:strokeWidth="1dp">
+
+            <TextView
+                android:id="@+id/txtServiceInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Table 05 | Change" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Thẻ RecyclerView này chứa các nút lọc danh mục (Coffee, Tea...) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_category" />
+    </LinearLayout>
+
+    <!-- Thẻ RecyclerView này chứa toàn bộ danh sách món ăn, được đặt ở giữa màn hình -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerProducts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layoutCartBar"
+        android:layout_below="@id/header"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_product_vertical" />
+
+    <!-- Khu vực thanh giỏ hàng nổi ở dưới cùng màn hình -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layoutCartBar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="#2D1A11"
+        app:cardCornerRadius="32dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="24dp">
+
+            <TextView
+                android:id="@+id/txtCartCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Xem đơn hàng"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtCartTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="$6.50"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

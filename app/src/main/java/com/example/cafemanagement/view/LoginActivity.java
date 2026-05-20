@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                 intent = new Intent(this, BaristaActivity.class);
                 break;
             default: // Mặc định là khách hàng (Customer)
-                intent = new Intent(this, MainActivity.class);
+                intent = new Intent(this, OrderSetupActivity.class);
                 break;
         }
         startActivity(intent);

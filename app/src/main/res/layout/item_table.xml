@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardTable"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_margin="6dp"
-    android:background="@drawable/bg_table_available"
-    android:padding="8dp">
+    android:layout_height="80dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
     <TextView
-        android:id="@+id/tv_table_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="14sp"
-        android:textColor="@color/text_primary" />
+        android:id="@+id/txtTableName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="01"
+        android:textColor="#5D4037"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tv_table_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:textColor="@color/text_secondary"
-        android:layout_marginTop="4dp" />
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

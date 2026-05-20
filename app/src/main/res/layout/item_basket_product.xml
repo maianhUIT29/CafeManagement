@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <ImageView
+        android:id="@+id/imgBasketItem"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_coffee"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/txtBasketItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="#2D1A11"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txtBasketItemPrice"
+        app:layout_constraintStart_toEndOf="@+id/imgBasketItem"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtBasketItemDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="#757575"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtBasketItemName"
+        app:layout_constraintStart_toStartOf="@+id/txtBasketItemName"
+        app:layout_constraintTop_toBottomOf="@+id/txtBasketItemName" />
+
+    <TextView
+        android:id="@+id/txtBasketItemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#2D1A11"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/btnMinusBasket"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_minus"
+            app:tint="#2D1A11" />
+
+        <TextView
+            android:id="@+id/txtQtyBasket"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="1"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btnPlusBasket"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_add"
+            app:tint="#2D1A11" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,5 +11,9 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="RoundedSmall" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
     <style name="Theme.CafeManagement" parent="Base.Theme.CafeManagement" />
 </resources>
