@@ -34,6 +34,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -51,4 +54,11 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     // Thư viện Realtime Database
     implementation("com.google.firebase:firebase-database")
+    //Thư viện Authentication để đăng nhập
+    implementation("com.google.firebase:firebase-auth")
+    // Thêm thư viện Google Play Services Auth
+    implementation("com.google.android.gms:play-services-auth:21.1.1")
+//thư viện cho mvvm
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.6.2")
 }
