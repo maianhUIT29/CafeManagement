@@ -1,21 +1,18 @@
 package com.example.cafemanagement.model;
 
 public class TableModel {
+    private String tableId;
     private String name;
     private String status;
     private String zone;
-    private String currentOrderId; // Có thể null nếu bàn trống
+    private String currentOrderId;
 
     public TableModel() {
     }
 
-    public TableModel(String name, String status, String zone) {
-        this.name = name;
-        this.status = status;
-        this.zone = zone;
-    }
+    public String getTableId() { return tableId; }
+    public void setTableId(String tableId) { this.tableId = tableId; }
 
-    // Getter và Setter
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

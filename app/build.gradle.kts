@@ -20,7 +20,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -44,6 +48,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -62,4 +67,22 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata:2.6.2")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+//thu vien retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //thu vien Glide de tai anh
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    //thư vien vnpay
+
+
+    // Khai báo chính xác tên tệp thư viện VNPAY
+    implementation(files("libs/merchant-1.0.25.aar"))
+    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("com.squareup.okhttp3:okhttp:3.14.1")
+    // Khai báo chính xác tên tệp thư viện ZaloPay
+    implementation(files("libs/zpdk-release-v3.1.aar"))
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("commons-codec:commons-codec:1.14")
+
 }

@@ -10,6 +10,11 @@ public class FirebaseHelper {
 
     public static FirebaseDatabase getDatabaseInstance() {
         return FirebaseDatabase.getInstance(DATABASE_URL);
+        if (mDatabase == null) {
+            mDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
+            // ĐÃ XÓA LỆNH setPersistenceEnabled Ở ĐÂY
+        }
+        return mDatabase;
     }
 
     public static DatabaseReference getCategoriesRef() {
