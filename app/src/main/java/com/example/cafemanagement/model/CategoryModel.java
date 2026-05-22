@@ -3,11 +3,9 @@ package com.example.cafemanagement.model;
 public class CategoryModel {
     private String id;
     private String name;
-    private int sortOrder;
+    private String icon; // optional emoji hoặc icon URL
 
-    // Constructor mặc định cho Firebase
-    public CategoryModel() {
-    }
+    public CategoryModel() {}
 
     public CategoryModel(String name, int sortOrder) {
         this.name = name;
@@ -23,6 +21,6 @@ public class CategoryModel {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public int getSortOrder() { return sortOrder; }
-    public void setSortOrder(int sortOrder) { this.sortOrder = sortOrder; }
+    public String getIcon() { return icon; }
+    public void setIcon(String icon) { this.icon = icon; }
 }
