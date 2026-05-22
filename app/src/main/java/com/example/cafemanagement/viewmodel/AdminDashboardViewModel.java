@@ -2,6 +2,7 @@ package com.example.cafemanagement.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cafemanagement.model.AdminDashboardStats;
@@ -145,5 +146,46 @@ public class AdminDashboardViewModel extends ViewModel {
             week[i] = base * factors[i];
         }
         stats.setWeeklyRevenue(week);
+    }
+
+    // --- Bổ sung các phương thức getter và fix lỗi triggerAiForecast ---
+    private final MutableLiveData<com.example.cafemanagement.model.AiForecastModel> aiForecastLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isAiLoadingLiveData = new MutableLiveData<>(false);
+    private final MutableLiveData<String> aiErrorLiveData = new MutableLiveData<>();
+
+    public LiveData<com.example.cafemanagement.model.AiForecastModel> getAiForecast() {
+        return aiForecastLiveData;
+    }
+
+    public LiveData<Boolean> getIsAiLoading() {
+        return isAiLoadingLiveData;
+    }
+
+    public LiveData<String> getAiError() {
+        return aiErrorLiveData;
+    }
+
+    public void triggerAiForecast() {
+        if (statsLiveData.getValue() == null) {
+            aiErrorLiveData.setValue("Chưa có dữ liệu thống kê");
+            return;
+        }
+
+        isAiLoadingLiveData.setValue(true);
+        String historicalData = "Dữ liệu 7 ngày qua: " + java.util.Arrays.toString(statsLiveData.getValue().getWeeklyRevenue());
+
+        new com.example.cafemanagement.helper.GeminiApiHelper().getRevenueForecast(historicalData, new com.example.cafemanagement.helper.GeminiApiHelper.GeminiCallback() {
+            @Override
+            public void onSuccess(com.example.cafemanagement.model.AiForecastModel result) {
+                aiForecastLiveData.postValue(result);
+                isAiLoadingLiveData.postValue(false);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                aiErrorLiveData.postValue(errorMessage);
+                isAiLoadingLiveData.postValue(false);
+            }
+        });
     }
 }

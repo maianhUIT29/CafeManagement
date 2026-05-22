@@ -17,6 +17,18 @@
             android:id="@+id/nav_admin_staff"
             android:icon="@android:drawable/ic_menu_my_calendar"
             android:title="Quản lý nhân sự" />
+        <item
+            android:id="@+id/nav_admin_voucher"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="Quản lý Voucher" />
+        <item
+            android:id="@+id/nav_admin_history"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:title="Nhật ký dòng tiền" />
+        <item
+            android:id="@+id/nav_admin_salary"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Quản lý lương" />
     </group>
 
     <item android:title="Hệ thống">

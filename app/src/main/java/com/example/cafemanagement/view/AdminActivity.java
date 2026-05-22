@@ -3,6 +3,7 @@ package com.example.cafemanagement.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -45,6 +46,7 @@ public class AdminActivity extends AdminBaseActivity {
         return "Tổng quan";
     }
 
+
     @Override
     protected void onAdminContentReady(Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(AdminDashboardViewModel.class);
@@ -67,6 +69,52 @@ public class AdminActivity extends AdminBaseActivity {
         setupInitialStats();
 
         viewModel.getStats().observe(this, this::bindStats);
+
+        // --- BỔ SUNG LOGIC AI ---
+        findViewById(R.id.btnTriggerAi).setOnClickListener(v -> viewModel.triggerAiForecast());
+
+        viewModel.getIsAiLoading().observe(this, isLoading -> {
+            ProgressBar progressBar = findViewById(R.id.aiProgressBar);
+            if (progressBar != null) {
+                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        viewModel.getAiForecast().observe(this, result -> {
+            if (result != null) showAiResultDialog(result);
+        });
+        // Lắng nghe lỗi
+        viewModel.getAiError().observe(this, error -> {
+            if (error != null) {
+                android.widget.Toast.makeText(this, "AI Lỗi: " + error, android.widget.Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // --- Đưa phương thức này ra ngoài onAdminContentReady ---
+    private void showAiResultDialog(com.example.cafemanagement.model.AiForecastModel result) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        android.view.View view = getLayoutInflater().inflate(R.layout.dialog_ai_forecast, null);
+        builder.setView(view);
+
+        android.widget.TextView txtRevenue = view.findViewById(R.id.txtAiPredictedRevenue);
+        android.widget.TextView txtAdvice = view.findViewById(R.id.txtAiAdvice);
+
+        // Tạo đối tượng dialog để quản lý
+        android.app.AlertDialog dialog = builder.create();
+
+        view.findViewById(R.id.btnCloseAiDialog).setOnClickListener(v -> dialog.dismiss());
+
+        // Format danh sách dự báo
+        StringBuilder sb = new StringBuilder();
+        for (Double val : result.getPredictedRevenue()) {
+            sb.append(com.example.cafemanagement.helper.PriceFormatter.formatPrice(val)).append("\n");
+        }
+
+        txtRevenue.setText(sb.toString());
+        txtAdvice.setText(result.getBusinessAdvice());
+
+        dialog.show();
     }
 
     private void setupQuickActions() {

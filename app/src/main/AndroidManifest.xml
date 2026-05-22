@@ -92,7 +92,15 @@
                 <data android:scheme="vnpay" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".view.AdminVoucherActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CafeManagement" />
+        <activity
+            android:name=".view.AdminHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CafeManagement" />
+        <activity android:name=".view.AdminSalaryActivity" />
     </application>
 
 </manifest>

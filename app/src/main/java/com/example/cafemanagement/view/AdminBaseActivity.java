@@ -141,6 +141,13 @@ public abstract class AdminBaseActivity extends AppCompatActivity
             target = AdminMenuActivity.class;
         } else if (id == R.id.nav_admin_staff) {
             target = AdminStaffActivity.class;
+        } else if (id == R.id.nav_admin_voucher) {
+            target = AdminVoucherActivity.class;
+        }
+        else if (id == R.id.nav_admin_history) {
+            target = AdminHistoryActivity.class;
+        } else if (id == R.id.nav_admin_salary) {
+            target = AdminSalaryActivity.class;
         }
 
         if (target != null && !target.equals(getClass())) {

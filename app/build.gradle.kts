@@ -7,9 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.cafemanagement"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.cafemanagement"
@@ -77,11 +75,9 @@ dependencies {
 
     // Khai báo chính xác tên tệp thư viện VNPAY
     implementation(files("libs/merchant-1.0.25.aar"))
-    implementation("com.google.code.gson:gson:2.8.5")
-    implementation("com.squareup.okhttp3:okhttp:3.14.1")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // Khai báo chính xác tên tệp thư viện ZaloPay
     implementation(files("libs/zpdk-release-v3.1.aar"))
-    implementation("com.squareup.okhttp3:okhttp:4.6.0")
     implementation("commons-codec:commons-codec:1.14")
-
 }
