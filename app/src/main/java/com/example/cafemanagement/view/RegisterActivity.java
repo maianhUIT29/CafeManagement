@@ -1,19 +1,24 @@
 package com.example.cafemanagement.view;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.example.cafemanagement.databinding.ActivityRegisterBinding;
 import com.example.cafemanagement.viewmodel.RegisterViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
+
     private ActivityRegisterBinding binding;
     private RegisterViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -24,49 +29,72 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-        // Lắng nghe kết quả trả về từ ViewModel
         viewModel.getRegisterStatus().observe(this, status -> {
+            if (status == null) {
+                return;
+            }
+
             if ("SUCCESS".equals(status)) {
                 Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                finish(); // Đóng màn hình đăng ký, tự động trở về màn hình Đăng nhập
-            } else if (status != null) {
+                finish();
+            } else {
                 Toast.makeText(this, "Lỗi: " + status, Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void setupEvents() {
-        // 1. Xử lý nút Đăng ký
         binding.btnRegisterSubmit.setOnClickListener(v -> {
-            // Lấy dữ liệu từ giao diện
             String name = binding.edtRegName.getText().toString().trim();
             String phone = binding.edtRegPhone.getText().toString().trim();
             String email = binding.edtRegEmail.getText().toString().trim();
-            String pass = binding.edtRegPassword.getText().toString().trim();
+            String password = binding.edtRegPassword.getText().toString().trim();
 
-            // Ràng buộc (Validation): Không được để trống trường bắt buộc
-            if (name.isEmpty() || phone.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập Họ tên, SĐT và Mật khẩu", Toast.LENGTH_SHORT).show();
+            if (name.isEmpty()) {
+                binding.edtRegName.setError("Vui lòng nhập họ tên");
+                binding.edtRegName.requestFocus();
                 return;
             }
 
-            // Ràng buộc (Validation): SĐT nên có 10 số (cơ bản)
+            if (phone.isEmpty()) {
+                binding.edtRegPhone.setError("Vui lòng nhập số điện thoại");
+                binding.edtRegPhone.requestFocus();
+                return;
+            }
+
             if (phone.length() < 10) {
-                Toast.makeText(this, "Số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
+                binding.edtRegPhone.setError("Số điện thoại không hợp lệ");
+                binding.edtRegPhone.requestFocus();
                 return;
             }
 
-            // Ràng buộc (Validation): Mật khẩu phải từ 6 ký tự trở lên (quy định của Firebase)
-            if (pass.length() < 6) {
-                Toast.makeText(this, "Mật khẩu phải chứa ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
+            if (email.isEmpty()) {
+                binding.edtRegEmail.setError("Vui lòng nhập email");
+                binding.edtRegEmail.requestFocus();
                 return;
             }
 
-            // Chuyển dữ liệu xuống ViewModel để xử lý
-            viewModel.register(name, phone, email, pass);
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.edtRegEmail.setError("Email không hợp lệ");
+                binding.edtRegEmail.requestFocus();
+                return;
+            }
+
+            if (password.isEmpty()) {
+                binding.edtRegPassword.setError("Vui lòng nhập mật khẩu");
+                binding.edtRegPassword.requestFocus();
+                return;
+            }
+
+            if (password.length() < 6) {
+                binding.edtRegPassword.setError("Mật khẩu phải chứa ít nhất 6 ký tự");
+                binding.edtRegPassword.requestFocus();
+                return;
+            }
+
+            viewModel.register(name, phone, email, password);
         });
 
-        // 2. Xử lý nút "Đã có tài khoản? Đăng nhập" (Trở về trang Login)
         binding.tvBackToLogin.setOnClickListener(v -> finish());
     }
 }

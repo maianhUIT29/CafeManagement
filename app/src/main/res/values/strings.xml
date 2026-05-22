@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">CafeManagement</string>
+    <string name="admin_drawer_open">Mở menu</string>
+    <string name="admin_drawer_close">Đóng menu</string>
     <string name="release_table">Trả bàn</string>
     <string name="table_occupied">Đang dùng</string>
     <string name="table_available">Trống</string>

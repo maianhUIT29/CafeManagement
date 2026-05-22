@@ -39,7 +39,7 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <!-- Khối nhập liệu (Thêm Background bo góc để cân đối) -->
+        <!-- Khối nhập liệu -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -179,9 +179,18 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
+            <!-- ProgressBar hiển thị khi đang đăng nhập -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:visibility="gone" />
         </LinearLayout>
 
-        <!-- Đường gạch ngang HOẶC (Tăng margin để tách biệt phần Google) -->
+        <!-- Đường gạch ngang HOẶC -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -211,7 +220,7 @@
                 android:background="#E0E0E0" />
         </LinearLayout>
 
-        <!-- Đăng ký Google (Thiết kế lại thành nút có viền) -->
+        <!-- Đăng nhập Google -->
         <androidx.cardview.widget.CardView
             android:id="@+id/layoutGoogle"
             android:layout_width="match_parent"
@@ -222,7 +231,6 @@
             app:cardElevation="0dp"
             app:cardBackgroundColor="@android:color/white">
 
-            <!-- Tạo viền bằng cách dùng một lớp view hoặc background drawable -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -246,7 +254,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Liên kết đăng ký (Tách biệt hẳn ở dưới cùng) -->
+        <!-- Liên kết đăng ký -->
         <TextView
             android:id="@+id/tvRegisterLink"
             android:layout_width="wrap_content"

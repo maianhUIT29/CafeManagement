@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,6 +21,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
@@ -31,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -41,6 +45,14 @@ public class LoginActivity extends AppCompatActivity {
         initUI();
         setupObservers();
         setupEvents();
+
+        // Kiểm tra xem đã đăng nhập chưa
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            Toast.makeText(this, "Tự động đăng nhập: " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
+            binding.progressBar.setVisibility(View.VISIBLE);
+            loginViewModel.checkCurrentUser();
+        }
     }
 
     private void initGoogleSignIn() {
@@ -59,25 +71,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-        // Lắng nghe kết quả từ ViewModel (status lúc này chính là Role hoặc thông báo lỗi)
         loginViewModel.getAuthStatus().observe(this, status -> {
             if (status == null) return;
 
+            binding.progressBar.setVisibility(View.GONE);
+            binding.btnLogin.setEnabled(true);
+
             if (status.startsWith("ERROR: ")) {
-                // Xử lý khi có lỗi trả về
                 String errorMsg = status.replace("ERROR: ", "");
                 Toast.makeText(this, "Lỗi: " + errorMsg, Toast.LENGTH_LONG).show();
             } else {
-                // Đăng nhập thành công, thực hiện điều hướng theo vai trò (role)
-                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                 navigateToDashboard(status);
             }
         });
     }
 
-    /**
-     * Hàm điều hướng người dùng dựa trên vai trò (Role)
-     */
     private void navigateToDashboard(String role) {
         Intent intent;
         switch (role.toLowerCase()) {
@@ -90,26 +98,23 @@ public class LoginActivity extends AppCompatActivity {
             case "barista":
                 intent = new Intent(this, BaristaActivity.class);
                 break;
-            default: // Mặc định là khách hàng (Customer)
+            default:
                 intent = new Intent(this, OrderSetupActivity.class);
                 break;
         }
         startActivity(intent);
-        finish(); // Đóng LoginActivity sau khi chuyển màn hình
+        finish();
     }
 
     private void setupEvents() {
-        // 1. Chuyển hướng sang màn hình Đăng ký
         binding.tvRegisterLink.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
         });
 
-        // 2. Chuyển hướng sang màn hình Quên mật khẩu
         binding.tvForgotPassword.setOnClickListener(v -> {
             startActivity(new Intent(this, ForgotPasswordActivity.class));
         });
 
-        // 3. Ẩn/Hiện mật khẩu
         binding.btnShowHide.setOnClickListener(v -> {
             isPasswordVisible = !isPasswordVisible;
             if (isPasswordVisible) {
@@ -117,13 +122,11 @@ public class LoginActivity extends AppCompatActivity {
                 binding.btnShowHide.setImageResource(R.drawable.ic_visibility);
             } else {
                 binding.edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                // Sửa lỗi: Sử dụng ic_visibility_off khi ẩn mật khẩu
-                binding.btnShowHide.setImageResource(R.drawable.ic_visibility);
+                binding.btnShowHide.setImageResource(R.drawable.ic_visibility_off);
             }
             binding.edtPassword.setSelection(binding.edtPassword.getText().length());
         });
 
-        // 4. Xử lý Đăng nhập bằng SĐT + Mật khẩu
         binding.btnLogin.setOnClickListener(v -> {
             String phone = binding.edtPhone.getText().toString().trim();
             String pass = binding.edtPassword.getText().toString().trim();
@@ -133,11 +136,13 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.btnLogin.setEnabled(false);
+
             saveRememberMeStatus(phone);
             loginViewModel.login(phone, pass);
         });
 
-        // 5. Xử lý Đăng nhập bằng Google
         binding.layoutGoogle.setOnClickListener(v -> {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             googleLauncher.launch(signInIntent);
@@ -150,7 +155,8 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("phone", phone);
             editor.putBoolean("remember", true);
         } else {
-            editor.clear();
+            editor.remove("phone");
+            editor.putBoolean("remember", false);
         }
         editor.apply();
     }
@@ -163,6 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         GoogleSignInAccount account = task.getResult(ApiException.class);
                         if (account != null) {
+                            binding.progressBar.setVisibility(View.VISIBLE);
                             loginViewModel.onGoogleAuthSuccess(account.getIdToken());
                         }
                     } catch (ApiException e) {

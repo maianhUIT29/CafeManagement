@@ -39,10 +39,39 @@ public class TableRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                FirebaseHelper.logDatabaseError("TableRepository.getAllTables", error);
                 tableLiveData.setValue(null);
             }
         });
 
         return tableLiveData;
+    }
+
+    public void addTable(TableModel table, RepositoryCallback callback) {
+        String key = tablesRef.push().getKey();
+        if (key == null) {
+            callback.onError("Không tạo được ID bàn");
+            return;
+        }
+        table.setTableId(key);
+        tablesRef.child(key).setValue(table)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    public void updateTable(TableModel table, RepositoryCallback callback) {
+        if (table.getTableId() == null || table.getTableId().isEmpty()) {
+            callback.onError("Thiếu ID bàn");
+            return;
+        }
+        tablesRef.child(table.getTableId()).setValue(table)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    public void deleteTable(String tableId, RepositoryCallback callback) {
+        tablesRef.child(tableId).removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 }

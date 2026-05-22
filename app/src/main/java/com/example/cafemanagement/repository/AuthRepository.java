@@ -2,6 +2,7 @@ package com.example.cafemanagement.repository;
 
 import androidx.annotation.NonNull;
 
+import com.example.cafemanagement.helper.FirebaseHelper;
 import com.example.cafemanagement.model.UserModel;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -10,132 +11,227 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class AuthRepository {
+
     private final FirebaseAuth mAuth;
     private final DatabaseReference mDatabase;
 
     public AuthRepository() {
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Users");
+        mDatabase = FirebaseHelper.getUsersRef();
     }
 
-    // Cập nhật interface để trả về String role khi thành công
     public interface AuthCallback {
         void onSuccess(String role);
         void onError(String message);
     }
+public void registerUser(UserModel user, String password, AuthCallback callback) {
+    if (user == null) {
+        callback.onError("Thông tin người dùng không hợp lệ");
+        return;
+    }
 
-    /**
-     * Đăng ký: Trả về role của user vừa tạo
-     */
-    public void registerUser(UserModel user, String password, AuthCallback callback) {
-        mAuth.createUserWithEmailAndPassword(user.getEmail(), password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        String uid = task.getResult().getUser().getUid();
-                        mDatabase.child(uid).setValue(user)
-                                .addOnCompleteListener(dbTask -> {
-                                    if (dbTask.isSuccessful()) {
-                                        // Đăng ký xong trả về role trong model (thường là customer)
-                                        callback.onSuccess(user.getRole());
-                                    } else {
-                                        callback.onError("Lỗi lưu Database: " + dbTask.getException().getMessage());
-                                    }
-                                });
-                    } else {
-                        callback.onError(task.getException() != null ? task.getException().getMessage() : "Đăng ký thất bại");
+    String email = user.getEmail();
+
+    if (email == null || email.trim().isEmpty()) {
+        callback.onError("Email không được để trống");
+        return;
+    }
+
+    if (password == null || password.trim().isEmpty()) {
+        callback.onError("Mật khẩu không được để trống");
+        return;
+    }
+
+    mAuth.createUserWithEmailAndPassword(email.trim(), password.trim())
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null && task.getResult().getUser() != null) {
+                    String uid = task.getResult().getUser().getUid();
+
+                    user.setUserId(uid);
+
+                    mDatabase.child(uid).setValue(user)
+                            .addOnSuccessListener(unused -> callback.onSuccess(user.getRole()))
+                            .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                } else {
+                    String message = "Đăng ký thất bại";
+
+                    if (task.getException() != null) {
+                        message = task.getException().getMessage();
+                    }
+
+                    callback.onError(message);
+                }
+            });
+}
+
+    public void login(String phone, String password, AuthCallback callback) {
+        if (phone == null || phone.trim().isEmpty()) {
+            callback.onError("Vui lòng nhập số điện thoại");
+            return;
+        }
+
+        if (password == null || password.trim().isEmpty()) {
+            callback.onError("Vui lòng nhập mật khẩu");
+            return;
+        }
+
+        String normalizedPhone = phone.trim();
+
+        mDatabase.orderByChild("phone")
+                .equalTo(normalizedPhone)
+                .limitToFirst(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            callback.onError("Số điện thoại này chưa được đăng ký");
+                            return;
+                        }
+
+                        String realEmail = null;
+
+                        for (DataSnapshot userSnap : snapshot.getChildren()) {
+                            realEmail = userSnap.child("email").getValue(String.class);
+                            break;
+                        }
+
+                        if (realEmail == null || realEmail.trim().isEmpty()) {
+                            callback.onError("Tài khoản này chưa có email để đăng nhập");
+                            return;
+                        }
+
+                        signInWithEmail(realEmail.trim(), password, callback);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        FirebaseHelper.logDatabaseError("AuthRepository.login", error);
+                        callback.onError("Lỗi kết nối Firebase: " + error.getMessage());
                     }
                 });
     }
 
-    /**
-     * Đăng nhập: Lấy UID -> Auth -> Lấy Role từ Database
-     */
-    public void login(String phone, String password, AuthCallback callback) {
-        mDatabase.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String realEmail = "";
-                    String userId = "";
-                    for (DataSnapshot userSnap : snapshot.getChildren()) {
-                        realEmail = userSnap.child("email").getValue(String.class);
-                        userId = userSnap.getKey(); // Lấy UID của user này
+    private void signInWithEmail(String email, String password, AuthCallback callback) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        String error = task.getException() != null
+                                ? task.getException().getMessage()
+                                : "Đăng nhập thất bại";
+                        callback.onError(error);
+                        return;
                     }
 
-                    if (realEmail != null && !realEmail.isEmpty()) {
-                        String finalUserId = userId;
-                        mAuth.signInWithEmailAndPassword(realEmail, password)
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        // Sau khi đăng nhập thành công, đi lấy role
-                                        fetchUserRole(finalUserId, callback);
-                                    } else {
-                                        callback.onError("Mật khẩu không chính xác");
-                                    }
-                                });
-                    }
-                } else {
-                    callback.onError("Số điện thoại này chưa được đăng ký");
-                }
-            }
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                callback.onError("Lỗi kết nối CSDL: " + error.getMessage());
-            }
-        });
+                    if (currentUser == null) {
+                        callback.onError("Đăng nhập thành công nhưng không lấy được thông tin người dùng");
+                        return;
+                    }
+
+                    fetchUserRole(currentUser.getUid(), callback);
+                });
     }
 
     /**
-     * Hàm phụ: Truy cập trực tiếp vào node của User để lấy Role
+     * Lấy role của user từ Realtime Database.
      */
-    private void fetchUserRole(String uid, AuthCallback callback) {
-        mDatabase.child(uid).child("role").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String role = task.getResult().getValue(String.class);
-                if (role == null) role = "customer"; // Mặc định nếu không tìm thấy
-                callback.onSuccess(role);
-            } else {
-                callback.onError("Không thể lấy quyền hạn người dùng");
-            }
-        });
+    public void fetchUserRole(String uid, AuthCallback callback) {
+        if (uid == null || uid.trim().isEmpty()) {
+            callback.onError("UID người dùng không hợp lệ");
+            return;
+        }
+
+        mDatabase.child(uid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        callback.onError("Không thể lấy thông tin người dùng");
+                        return;
+                    }
+
+                    DataSnapshot snapshot = task.getResult();
+
+                    if (snapshot == null || !snapshot.exists()) {
+                        callback.onError("Không tìm thấy thông tin người dùng trong Database");
+                        return;
+                    }
+
+                    String role = snapshot.child("role").getValue(String.class);
+
+                    if (role == null || role.trim().isEmpty()) {
+                        role = "customer";
+                    }
+
+                    callback.onSuccess(role.trim());
+                });
     }
 
-    /**
-     * Quên mật khẩu: Trả về null cho role vì không cần chuyển hướng role
-     */
     public void forgotPassword(String email, AuthCallback callback) {
-        if (email == null || email.isEmpty()) {
+        if (email == null || email.trim().isEmpty()) {
             callback.onError("Email không được để trống");
             return;
         }
-        mAuth.sendPasswordResetEmail(email)
+
+        mAuth.sendPasswordResetEmail(email.trim())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         callback.onSuccess(null);
                     } else {
-                        callback.onError(task.getException() != null ? task.getException().getMessage() : "Không thể gửi email");
+                        String error = task.getException() != null
+                                ? task.getException().getMessage()
+                                : "Không thể gửi email";
+                        callback.onError(error);
                     }
                 });
     }
 
-    /**
-     * Đăng nhập Google: Cũng cần lấy Role sau khi login thành công
-     */
     public void firebaseAuthWithGoogle(String idToken, AuthCallback callback) {
+        if (idToken == null || idToken.trim().isEmpty()) {
+            callback.onError("Google token không hợp lệ");
+            return;
+        }
+
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        String uid = task.getResult().getUser().getUid();
-                        fetchUserRole(uid, callback);
-                    } else {
-                        callback.onError("Lỗi xác thực Google");
+                    if (!task.isSuccessful() || task.getResult() == null || task.getResult().getUser() == null) {
+                        String error = task.getException() != null
+                                ? task.getException().getMessage()
+                                : "Lỗi xác thực Google";
+                        callback.onError(error);
+                        return;
                     }
+
+                    FirebaseUser firebaseUser = task.getResult().getUser();
+                    String uid = firebaseUser.getUid();
+
+                    mDatabase.child(uid)
+                            .get()
+                            .addOnSuccessListener(snapshot -> {
+                                if (snapshot.exists()) {
+                                    fetchUserRole(uid, callback);
+                                } else {
+                                    UserModel newUser = new UserModel();
+                                    newUser.setUserId(uid);
+                                    newUser.setName(firebaseUser.getDisplayName());
+                                    newUser.setEmail(firebaseUser.getEmail());
+                                    newUser.setPhone("");
+                                    newUser.setRole("customer");
+                                    newUser.setPoints(0);
+                                    newUser.setSalaryRate(0);
+
+                                    mDatabase.child(uid)
+                                            .setValue(newUser)
+                                            .addOnSuccessListener(unused -> callback.onSuccess("customer"))
+                                            .addOnFailureListener(e -> callback.onError("Không thể tạo user Google: " + e.getMessage()));
+                                }
+                            })
+                            .addOnFailureListener(e -> callback.onError("Không thể kiểm tra user Google: " + e.getMessage()));
                 });
     }
 }

@@ -43,6 +43,15 @@
         <activity android:name=".view.AdminActivity"
             android:exported="false" />
 
+        <activity android:name=".view.AdminStaffActivity"
+            android:exported="false" />
+
+        <activity android:name=".view.AdminMenuActivity"
+            android:exported="false" />
+
+        <activity android:name=".view.AdminTableActivity"
+            android:exported="false" />
+
         <activity android:name=".view.CashierActivity"
             android:exported="false" />
 
@@ -83,7 +92,15 @@
                 <data android:scheme="vnpay" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".view.AdminVoucherActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CafeManagement" />
+        <activity
+            android:name=".view.AdminHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CafeManagement" />
+        <activity android:name=".view.AdminSalaryActivity" />
     </application>
 
 </manifest>

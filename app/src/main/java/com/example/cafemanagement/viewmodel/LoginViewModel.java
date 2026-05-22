@@ -5,7 +5,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.cafemanagement.repository.AuthRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginViewModel extends AndroidViewModel {
     private final AuthRepository authRepository;
@@ -24,13 +27,11 @@ public class LoginViewModel extends AndroidViewModel {
         authRepository.login(phone, password, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess(String role) {
-                // Trả về role (admin, cashier, barista, customer) để Activity điều hướng
                 authStatus.setValue(role);
             }
 
             @Override
             public void onError(String message) {
-                // Thêm tiền tố "ERROR: " để Activity nhận biết đây là thông báo lỗi
                 authStatus.setValue("ERROR: " + message);
             }
         });
@@ -40,15 +41,33 @@ public class LoginViewModel extends AndroidViewModel {
         authRepository.firebaseAuthWithGoogle(idToken, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess(String role) {
-                // Đã cập nhật: Google Auth giờ cũng trả về role từ Database
                 authStatus.setValue(role);
             }
 
             @Override
             public void onError(String message) {
-                // Đồng bộ cấu trúc thông báo lỗi
                 authStatus.setValue("ERROR: " + message);
             }
         });
+    }
+
+    /**
+     * Kiểm tra xem người dùng đã đăng nhập chưa và lấy Role
+     */
+    public void checkCurrentUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            authRepository.fetchUserRole(user.getUid(), new AuthRepository.AuthCallback() {
+                @Override
+                public void onSuccess(String role) {
+                    authStatus.setValue(role);
+                }
+
+                @Override
+                public void onError(String message) {
+                    authStatus.setValue("ERROR: " + message);
+                }
+            });
+        }
     }
 }

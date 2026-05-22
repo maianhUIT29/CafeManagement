@@ -1,14 +1,17 @@
 package com.example.cafemanagement.viewmodel;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.cafemanagement.model.UserModel;
 import com.example.cafemanagement.repository.AuthRepository;
 
 public class RegisterViewModel extends AndroidViewModel {
+
     private final AuthRepository authRepository;
     private final MutableLiveData<String> registerStatus = new MutableLiveData<>();
 
@@ -22,6 +25,21 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     public void register(String name, String phone, String email, String password) {
+        if (name == null || phone == null || email == null || password == null) {
+            registerStatus.setValue("Dữ liệu đăng ký không hợp lệ");
+            return;
+        }
+
+        name = name.trim();
+        phone = phone.trim();
+        email = email.trim();
+        password = password.trim();
+
+        if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            registerStatus.setValue("Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+
         UserModel newUser = new UserModel();
         newUser.setName(name);
         newUser.setPhone(phone);
@@ -31,7 +49,7 @@ public class RegisterViewModel extends AndroidViewModel {
 
         authRepository.registerUser(newUser, password, new AuthRepository.AuthCallback() {
             @Override
-            public void onSuccess(String role) { // Cập nhật: Thêm String role
+            public void onSuccess(String role) {
                 registerStatus.setValue("SUCCESS");
             }
 

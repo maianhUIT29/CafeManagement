@@ -36,9 +36,38 @@ public class ProductRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                FirebaseHelper.logDatabaseError("ProductRepository.getAllProducts", error);
                 data.setValue(null);
             }
         });
         return data;
+    }
+
+    public void addProduct(ProductModel product, RepositoryCallback callback) {
+        String key = productsRef.push().getKey();
+        if (key == null) {
+            callback.onError("Không tạo được ID món");
+            return;
+        }
+        product.setProductId(key);
+        productsRef.child(key).setValue(product)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    public void updateProduct(ProductModel product, RepositoryCallback callback) {
+        if (product.getProductId() == null || product.getProductId().isEmpty()) {
+            callback.onError("Thiếu ID món");
+            return;
+        }
+        productsRef.child(product.getProductId()).setValue(product)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    public void deleteProduct(String productId, RepositoryCallback callback) {
+        productsRef.child(productId).removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 }
