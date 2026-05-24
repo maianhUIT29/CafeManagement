@@ -18,24 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cafemanagement.R;
 import com.example.cafemanagement.model.TableModel;
-import com.example.cafemanagement.view.CashierActivity;
 import com.example.cafemanagement.view.cashier.adapter.TableAdapter;
 import com.example.cafemanagement.viewmodel.SelectTableViewModel;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SelectTableFragment extends Fragment {
 
     private SelectTableViewModel viewModel;
-
     private ChipGroup    chipGroupZone;
     private RecyclerView rvTables;
     private Button       btnContinue;
     private TableAdapter tableAdapter;
 
-    // UI state — chỉ dùng trong Fragment lifecycle
     private String  selectedTableId   = null;
     private String  selectedTableName = null;
     private boolean tableWasOccupied  = false;
@@ -57,14 +55,13 @@ public class SelectTableFragment extends Fragment {
         rvTables      = view.findViewById(R.id.rv_tables);
         btnContinue   = view.findViewById(R.id.btn_continue_to_menu);
 
+        // Khởi tạo Adapter với danh sách rỗng an toàn
         tableAdapter = new TableAdapter(
                 new ArrayList<>(),
                 new ArrayList<>(),
-                // Short click
                 (tableId, table) -> {
                     if ("OCCUPIED".equals(table.getStatus())) {
-                        Toast.makeText(requireContext(),
-                                "Bàn đang dùng — giữ để trả bàn", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Bàn đang dùng", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     selectedTableId   = tableId;
@@ -73,7 +70,6 @@ public class SelectTableFragment extends Fragment {
                     btnContinue.setEnabled(true);
                     btnContinue.setText("Tiếp tục — " + table.getName());
                 },
-                // Long click
                 (tableId, table) -> {
                     if ("OCCUPIED".equals(table.getStatus()))
                         showReleaseTableDialog(tableId, table);
@@ -83,7 +79,6 @@ public class SelectTableFragment extends Fragment {
         rvTables.setLayoutManager(new GridLayoutManager(requireContext(), 3));
         rvTables.setAdapter(tableAdapter);
 
-        btnContinue.setEnabled(false);
         btnContinue.setOnClickListener(v -> {
             if (selectedTableId != null)
                 viewModel.confirmTableSelection(selectedTableId, selectedTableName);
@@ -96,20 +91,16 @@ public class SelectTableFragment extends Fragment {
             }
         });
 
-        // Observe
         setupObservers();
 
-        // Load
         if (savedInstanceState == null) viewModel.loadTables();
 
-        // Back callback
         requireActivity().getOnBackPressedDispatcher()
                 .addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (tableWasOccupied && selectedTableId != null) {
                             viewModel.releaseTableOnBack(selectedTableId);
-                            tableWasOccupied = false;
                         }
                         setEnabled(false);
                         requireActivity().getOnBackPressedDispatcher().onBackPressed();
@@ -118,21 +109,19 @@ public class SelectTableFragment extends Fragment {
     }
 
     private void setupObservers() {
-        viewModel.getDisplayedTables().observe(getViewLifecycleOwner(), tables ->
-                tableAdapter.updateData(tables,
-                        viewModel.getDisplayedIds().getValue() != null
-                                ? viewModel.getDisplayedIds().getValue() : new ArrayList<>()));
+        // Cập nhật giao diện khi có dữ liệu bàn mới (đã đồng bộ ID và Object)
+        viewModel.getTableData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null && data.tables != null && data.ids != null) {
+                tableAdapter.updateData(data.tables, data.ids);
+            }
+        });
 
-        viewModel.getDisplayedIds().observe(getViewLifecycleOwner(), ids ->
-                tableAdapter.updateData(
-                        viewModel.getDisplayedTables().getValue() != null
-                                ? viewModel.getDisplayedTables().getValue() : new ArrayList<>(),
-                        ids));
-
-        viewModel.getZoneList().observe(getViewLifecycleOwner(), this::buildZoneChips);
+        viewModel.getZoneList().observe(getViewLifecycleOwner(), zones -> {
+            if (isAdded()) buildZoneChips(zones);
+        });
 
         viewModel.getToastMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null)
+            if (msg != null && isAdded())
                 Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
         });
 
@@ -145,22 +134,21 @@ public class SelectTableFragment extends Fragment {
                     break;
                 case SUCCESS:
                     tableWasOccupied = true;
-                    ((CashierActivity) requireActivity())
-                            .navigateTo(CashierActivity.SCREEN_MENU, null, true);
+                    if (getActivity() instanceof CashierActivity) {
+                        ((CashierActivity) getActivity())
+                                .navigateTo(CashierActivity.SCREEN_MENU, null, true);
+                    }
                     break;
                 case ERROR:
                     btnContinue.setEnabled(true);
                     btnContinue.setText("Tiếp tục — " + selectedTableName);
-                    Toast.makeText(requireContext(),
-                            "Lỗi: " + result.errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Lỗi: " + result.errorMessage, Toast.LENGTH_SHORT).show();
                     break;
             }
         });
     }
 
-    // --- UI helpers ---
-
-    private void buildZoneChips(java.util.List<String> zones) {
+    private void buildZoneChips(List<String> zones) {
         chipGroupZone.removeAllViews();
         for (String zone : zones) {
             Chip chip = new Chip(requireContext());
@@ -176,10 +164,8 @@ public class SelectTableFragment extends Fragment {
     private void showReleaseTableDialog(String tableId, TableModel table) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Trả bàn — " + table.getName())
-                .setMessage("Bàn đang được đánh dấu là đang dùng.\n"
-                        + "Bạn có muốn trả bàn về trạng thái trống không?")
-                .setPositiveButton("Trả bàn ✓",
-                        (d, w) -> viewModel.releaseTable(tableId, table.getName()))
+                .setMessage("Bạn có muốn trả bàn về trạng thái trống không?")
+                .setPositiveButton("Trả bàn ✓", (d, w) -> viewModel.releaseTable(tableId, table.getName()))
                 .setNegativeButton("Hủy", null)
                 .show();
     }

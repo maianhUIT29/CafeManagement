@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cafemanagement.R;
 import com.example.cafemanagement.model.ShiftModel;
-import com.example.cafemanagement.view.CashierActivity;
 import com.example.cafemanagement.viewmodel.ShiftViewModel;
 
 import java.text.NumberFormat;

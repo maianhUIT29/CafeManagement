@@ -24,12 +24,8 @@
             </intent-filter>
         </activity>
 
-        <!-- Khai báo các màn hình khác đã tạo -->
         <activity
-            android:name=".view.OrderSetupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.MenuActivity"
+            android:name=".view.customer.CustomerOrderSetupActivity"
             android:exported="false" />
 
         <activity
@@ -40,37 +36,30 @@
             android:name=".view.ForgotPasswordActivity"
             android:exported="false" />
 
-        <activity android:name=".view.AdminActivity"
+        <activity android:name=".view.admin.AdminActivity"
             android:exported="false" />
 
-        <activity android:name=".view.AdminStaffActivity"
+        <activity android:name=".view.admin.AdminStaffActivity"
             android:exported="false" />
 
-        <activity android:name=".view.AdminMenuActivity"
+        <activity android:name=".view.admin.AdminMenuActivity"
             android:exported="false" />
 
-        <activity android:name=".view.AdminTableActivity"
+        <activity android:name=".view.admin.AdminTableActivity"
             android:exported="false" />
 
-        <activity android:name=".view.CashierActivity"
+        <activity android:name=".view.cashier.CashierActivity"
             android:exported="false" />
 
-        <activity android:name=".view.BaristaActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".view.DrinkCustomizeActivity"
+        <activity android:name=".view.barista.BaristaActivity"
             android:exported="false" />
 
         <activity
-            android:name=".view.BasketActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.OrderStatusActivity"
+            android:name=".view.customer.CustomerDrinkCustomizeActivity"
             android:exported="false" />
 
         <activity
-            android:name=".view.CheckoutActivity"
+            android:name=".view.customer.CustomerCheckoutActivity"
             android:exported="true"
             android:label="Merchant Demo"
             android:launchMode="singleTask">
@@ -93,14 +82,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.AdminVoucherActivity"
+            android:name=".view.admin.AdminVoucherActivity"
             android:exported="false"
             android:theme="@style/Theme.CafeManagement" />
         <activity
-            android:name=".view.AdminHistoryActivity"
+            android:name=".view.admin.AdminHistoryActivity"
             android:exported="false"
             android:theme="@style/Theme.CafeManagement" />
-        <activity android:name=".view.AdminSalaryActivity" />
+        <activity android:name=".view.admin.AdminSalaryActivity" />
+        <activity android:name=".view.customer.CustomerMainActivity" />
+
     </application>
 
 </manifest>

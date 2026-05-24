@@ -42,6 +42,18 @@
             android:maxLines="1"
             android:ellipsize="end" />
 
+        <!-- Nút đăng xuất -->
+        <ImageButton
+            android:id="@+id/btn_logout"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_logout"
+            app:tint="@color/accent_brown"
+            android:contentDescription="Đăng xuất" />
+
     </LinearLayout>
 
     <!-- ── Fragment container ──────────────────────────────────────────────── -->

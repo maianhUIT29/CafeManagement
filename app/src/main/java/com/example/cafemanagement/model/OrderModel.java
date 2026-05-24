@@ -38,6 +38,11 @@ public class OrderModel {
     private String paymentMethod;
     private String note;
 
+    // Khai báo thêm các biến phục vụ cho tính năng tích điểm
+    private String orderId;
+    private String customerId;
+    private int pointsEarned;
+
     public OrderModel() {}
 
     public void recalculate() {
@@ -106,5 +111,32 @@ public class OrderModel {
     /** Helper: đơn tại chỗ (có bàn cần quản lý) */
     public boolean isDineIn() {
         return TYPE_DINE_IN.equals(orderType);
+    }
+
+
+
+    // Các phương thức Getter và Setter bắt buộc
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public int getPointsEarned() {
+        return pointsEarned;
+    }
+
+    public void setPointsEarned(int pointsEarned) {
+        this.pointsEarned = pointsEarned;
     }
 }

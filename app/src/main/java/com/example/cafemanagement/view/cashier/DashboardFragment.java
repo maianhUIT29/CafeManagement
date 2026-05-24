@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cafemanagement.R;
 import com.example.cafemanagement.helper.CartManager;
-import com.example.cafemanagement.view.CashierActivity;
 import com.example.cafemanagement.view.cashier.adapter.ActiveOrderAdapter;
 import com.example.cafemanagement.viewmodel.DashboardViewModel;
 
@@ -66,6 +65,16 @@ public class DashboardFragment extends Fragment {
             ((CashierActivity) requireActivity())
                     .navigateTo(CashierActivity.SCREEN_ORDER_TYPE, null, true);
         });
+
+        // Nút đăng xuất trên Dashboard
+        View btnLogout = view.findViewById(R.id.btn_logout_dashboard);
+        if (btnLogout != null) {
+            btnLogout.setOnClickListener(v -> {
+                if (getActivity() instanceof CashierActivity) {
+                    ((CashierActivity) getActivity()).showLogoutConfirmationDialog();
+                }
+            });
+        }
 
         // Load data
         if (savedInstanceState == null) viewModel.loadAll();

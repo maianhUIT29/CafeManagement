@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cafemanagement.R;
 import com.example.cafemanagement.helper.CartManager;
 import com.example.cafemanagement.model.OrderModel;
-import com.example.cafemanagement.view.CashierActivity;
 import com.example.cafemanagement.view.cashier.adapter.CartItemAdapter;
 import com.example.cafemanagement.viewmodel.PaymentViewModel;
 import com.google.android.material.button.MaterialButton;

@@ -11,12 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.cafemanagement.R;
 import com.example.cafemanagement.helper.CartManager;
 import com.example.cafemanagement.model.OrderModel;
-import com.example.cafemanagement.view.CashierActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class OrderTypeFragment extends Fragment {
@@ -27,7 +27,7 @@ public class OrderTypeFragment extends Fragment {
     private TextView       tvDineInCheck, tvTakeAwayCheck;
     private MaterialButton btnNext;
 
-    private String selectedType = null; // chưa chọn
+    private String selectedType = null;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,46 +60,37 @@ public class OrderTypeFragment extends Fragment {
         selectedType = type;
         boolean isDineIn = OrderModel.TYPE_DINE_IN.equals(type);
 
-        // Highlight card được chọn
-        cardDineIn.setCardBackgroundColor(getResources().getColor(
-                isDineIn ? R.color.accent_yellow : R.color.surface,
-                requireActivity().getTheme()));
-        cardTakeAway.setCardBackgroundColor(getResources().getColor(
-                isDineIn ? R.color.surface : R.color.accent_yellow,
-                requireActivity().getTheme()));
+        // ĐÃ SỬA: Sử dụng ContextCompat.getColor để lấy màu an toàn, tránh crash
+        int activeColor = ContextCompat.getColor(requireContext(), R.color.accent_yellow);
+        int surfaceColor = ContextCompat.getColor(requireContext(), R.color.surface);
 
-        // Check mark
+        cardDineIn.setCardBackgroundColor(isDineIn ? activeColor : surfaceColor);
+        cardTakeAway.setCardBackgroundColor(isDineIn ? surfaceColor : activeColor);
+
         tvDineInCheck.setVisibility(isDineIn   ? View.VISIBLE : View.INVISIBLE);
         tvTakeAwayCheck.setVisibility(isDineIn ? View.INVISIBLE : View.VISIBLE);
 
-        // Hiện ô nhập SĐT khi chọn Mang đi
         panelTakeAwayPhone.setVisibility(isDineIn ? View.GONE : View.VISIBLE);
 
         btnNext.setEnabled(true);
-        btnNext.setText(isDineIn ? "Chọn bàn →" : "Tiếp tục →");
+        btnNext.setText(isDineIn ? "Tiếp tục: Chọn bàn →" : "Tiếp tục: Chọn món →");
     }
 
     private void proceed() {
-        if (selectedType == null) return;
+        if (selectedType == null || getActivity() == null) return;
 
-        // Lưu orderType vào CartManager để PaymentFragment đọc
         CartManager cart = CartManager.getInstance();
         cart.setOrderType(selectedType);
 
         if (OrderModel.TYPE_TAKE_AWAY.equals(selectedType)) {
-            // Lưu SĐT (optional — tính năng tích điểm sau)
-            String phone = etPhone.getText() != null
-                    ? etPhone.getText().toString().trim() : "";
+            String phone = etPhone.getText() != null ? etPhone.getText().toString().trim() : "";
             cart.setCustomerPhone(phone);
-
-            // Mang đi → không cần chọn bàn → thẳng vào Menu
             cart.setTable(null, "Mang đi");
-            ((CashierActivity) requireActivity())
-                    .navigateTo(CashierActivity.SCREEN_MENU, null, true);
+            
+            ((CashierActivity) getActivity()).navigateTo(CashierActivity.SCREEN_MENU, null, true);
         } else {
-            // Tại chỗ → chọn bàn
-            ((CashierActivity) requireActivity())
-                    .navigateTo(CashierActivity.SCREEN_SELECT_TABLE, null, true);
+            // Tại chỗ → chuyển sang màn hình chọn bàn
+            ((CashierActivity) getActivity()).navigateTo(CashierActivity.SCREEN_SELECT_TABLE, null, true);
         }
     }
 }

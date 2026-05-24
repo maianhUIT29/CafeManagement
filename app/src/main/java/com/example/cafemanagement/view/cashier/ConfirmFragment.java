@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.cafemanagement.R;
-import com.example.cafemanagement.view.CashierActivity;
 
 import java.text.NumberFormat;
 import java.util.Locale;

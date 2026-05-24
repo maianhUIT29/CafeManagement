@@ -19,25 +19,18 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.VH> {
         void onClick(String tableId, TableModel table);
     }
 
-    // Short click và long click riêng biệt
     private final List<TableModel> tables;
     private final List<String>     ids;
     private final OnTableClick     onClick;
-    private final OnTableClick     onLongClick;   // nullable
+    private final OnTableClick     onLongClick;
     private String                 selectedId = null;
 
-    /** Constructor với long click (dùng cho SelectTableFragment) */
     public TableAdapter(List<TableModel> tables, List<String> ids,
                         OnTableClick onClick, OnTableClick onLongClick) {
         this.tables      = tables;
         this.ids         = ids;
         this.onClick     = onClick;
         this.onLongClick = onLongClick;
-    }
-
-    /** Constructor không có long click (tương thích ngược) */
-    public TableAdapter(List<TableModel> tables, List<String> ids, OnTableClick onClick) {
-        this(tables, ids, onClick, null);
     }
 
     public void setSelectedId(String id) {
@@ -47,13 +40,16 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.VH> {
 
     @NonNull @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // ĐÃ SỬA: Sử dụng item_table_cashier thay vì item_table chung
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_table, parent, false);
+                .inflate(R.layout.item_table_cashier, parent, false);
         return new VH(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VH h, int pos) {
+        if (pos >= tables.size() || pos >= ids.size()) return;
+        
         TableModel t  = tables.get(pos);
         String     id = ids.get(pos);
 
@@ -64,30 +60,33 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.VH> {
 
         h.tvStatus.setText(isOccupied ? "Đang dùng" : "Trống");
 
-        // Background
+        // Cập nhật giao diện dựa trên trạng thái
         if (isSelected) {
             h.itemView.setBackgroundResource(R.drawable.bg_table_selected);
+            h.tvName.setTextColor(android.graphics.Color.WHITE);
+            h.tvStatus.setTextColor(android.graphics.Color.WHITE);
         } else if (isOccupied) {
             h.itemView.setBackgroundResource(R.drawable.bg_table_occupied);
+            h.tvName.setTextColor(android.graphics.Color.parseColor("#7A6658"));
+            h.tvStatus.setTextColor(android.graphics.Color.parseColor("#D94F4F"));
         } else {
             h.itemView.setBackgroundResource(R.drawable.bg_table_available);
+            h.tvName.setTextColor(android.graphics.Color.parseColor("#1A1209"));
+            h.tvStatus.setTextColor(android.graphics.Color.parseColor("#2D9B5A"));
         }
 
-        h.itemView.setAlpha(isOccupied && !isSelected ? 0.6f : 1f);
-
-        // Short click
+        h.itemView.setAlpha(isOccupied && !isSelected ? 0.7f : 1f);
         h.itemView.setOnClickListener(v -> onClick.onClick(id, t));
 
-        // Long click → trả bàn
         if (onLongClick != null) {
             h.itemView.setOnLongClickListener(v -> {
                 onLongClick.onClick(id, t);
-                return true; // consume event
+                return true;
             });
         }
     }
 
-    @Override public int getItemCount() { return tables.size(); }
+    @Override public int getItemCount() { return Math.min(tables.size(), ids.size()); }
 
     static class VH extends RecyclerView.ViewHolder {
         TextView tvName, tvStatus;
@@ -97,8 +96,9 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.VH> {
             tvStatus = v.findViewById(R.id.tv_table_status);
         }
     }
+
     public void updateData(List<TableModel> newTables, List<String> newIds) {
-        this.tables.clear();      // tên field thực tế trong TableAdapter
+        this.tables.clear();
         this.tables.addAll(newTables);
         this.ids.clear();
         this.ids.addAll(newIds);

@@ -19,26 +19,30 @@ import java.util.Map;
 
 public class SelectTableViewModel extends ViewModel {
 
-    // --- LiveData ---
-    private final MutableLiveData<List<TableModel>> displayedTables = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<List<String>>     displayedIds    = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<List<String>>     zoneList        = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<String>           toastMessage    = new MutableLiveData<>();
-    private final MutableLiveData<TableSelectResult> selectResult   = new MutableLiveData<>();
+    // --- Lớp bọc dữ liệu để tránh xung đột chỉ số ---
+    public static class TableDataWrapper {
+        public final List<TableModel> tables;
+        public final List<String> ids;
+        public TableDataWrapper(List<TableModel> tables, List<String> ids) {
+            this.tables = tables;
+            this.ids = ids;
+        }
+    }
 
-    // --- State nội bộ ---
-    private final Map<String, TableModel> allTables   = new LinkedHashMap<>();
+    private final MutableLiveData<TableDataWrapper> tableData = new MutableLiveData<>(new TableDataWrapper(new ArrayList<>(), new ArrayList<>()));
+    private final MutableLiveData<List<String>>     zoneList  = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<String>           toastMessage = new MutableLiveData<>();
+    private final MutableLiveData<TableSelectResult> selectResult = new MutableLiveData<>();
+
+    private final Map<String, TableModel> allTables = new LinkedHashMap<>();
     private String currentZone = "Tất cả";
     private ValueEventListener tablesListener;
 
-    // --- Getters ---
-    public LiveData<List<TableModel>>  getDisplayedTables() { return displayedTables; }
-    public LiveData<List<String>>      getDisplayedIds()    { return displayedIds; }
-    public LiveData<List<String>>      getZoneList()        { return zoneList; }
-    public LiveData<String>            getToastMessage()    { return toastMessage; }
-    public LiveData<TableSelectResult> getSelectResult()    { return selectResult; }
+    public LiveData<TableDataWrapper> getTableData() { return tableData; }
+    public LiveData<List<String>>      getZoneList()  { return zoneList; }
+    public LiveData<String>            getToastMessage() { return toastMessage; }
+    public LiveData<TableSelectResult> getSelectResult() { return selectResult; }
 
-    // --- Load tables (realtime) ---
     public void loadTables() {
         tablesListener = new ValueEventListener() {
             @Override
@@ -55,7 +59,7 @@ public class SelectTableViewModel extends ViewModel {
                             zones.add(t.getZone());
                     }
                 }
-                zoneList.setValue(zones);
+                zoneList.postValue(zones);
                 filterByZone(currentZone);
             }
             @Override public void onCancelled(@NonNull DatabaseError e) {}
@@ -63,7 +67,6 @@ public class SelectTableViewModel extends ViewModel {
         FirebaseHelper.getTablesRef().addValueEventListener(tablesListener);
     }
 
-    // --- Filter ---
     public void filterByZone(String zone) {
         currentZone = zone;
         List<String>     ids    = new ArrayList<>();
@@ -74,11 +77,10 @@ public class SelectTableViewModel extends ViewModel {
                 tables.add(e.getValue());
             }
         }
-        displayedIds.setValue(ids);
-        displayedTables.setValue(tables);
+        // Đã sửa: Cập nhật đồng thời để tránh lỗi lệch Index
+        tableData.postValue(new TableDataWrapper(tables, ids));
     }
 
-    // --- Xác nhận chọn bàn → set OCCUPIED ---
     public void confirmTableSelection(String tableId, String tableName) {
         selectResult.setValue(TableSelectResult.loading());
         FirebaseHelper.getTablesRef()
@@ -91,57 +93,35 @@ public class SelectTableViewModel extends ViewModel {
                         selectResult.setValue(TableSelectResult.error(e.getMessage())));
     }
 
-    // --- Giải phóng bàn khi back (chưa sang Menu) ---
     public void releaseTableOnBack(String tableId) {
-        FirebaseHelper.getTablesRef()
-                .child(tableId).child("status").setValue("AVAILABLE");
+        FirebaseHelper.getTablesRef().child(tableId).child("status").setValue("AVAILABLE");
     }
 
-    // --- Long press: trả bàn về AVAILABLE ---
     public void releaseTable(String tableId, String tableName) {
-        FirebaseHelper.getTablesRef().child(tableId)
-                .child("status").setValue("AVAILABLE")
+        FirebaseHelper.getTablesRef().child(tableId).child("status").setValue("AVAILABLE")
                 .addOnSuccessListener(u -> {
-                    FirebaseHelper.getTablesRef().child(tableId)
-                            .child("currentOrderId").setValue(null);
+                    FirebaseHelper.getTablesRef().child(tableId).child("currentOrderId").setValue(null);
                     toastMessage.setValue(tableName + " đã trả về trống ✓");
-                })
-                .addOnFailureListener(e ->
-                        toastMessage.setValue("Lỗi: " + e.getMessage()));
+                });
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (tablesListener != null)
-            FirebaseHelper.getTablesRef().removeEventListener(tablesListener);
+        if (tablesListener != null) FirebaseHelper.getTablesRef().removeEventListener(tablesListener);
     }
 
-    // --- Result wrapper ---
     public static class TableSelectResult {
         public enum State { LOADING, SUCCESS, ERROR }
-
         public final State  state;
         public final String tableId;
         public final String tableName;
         public final String errorMessage;
-
-        private TableSelectResult(State state, String tableId,
-                                  String tableName, String errorMessage) {
-            this.state        = state;
-            this.tableId      = tableId;
-            this.tableName    = tableName;
-            this.errorMessage = errorMessage;
+        private TableSelectResult(State state, String tableId, String tableName, String errorMessage) {
+            this.state = state; this.tableId = tableId; this.tableName = tableName; this.errorMessage = errorMessage;
         }
-
-        public static TableSelectResult loading() {
-            return new TableSelectResult(State.LOADING, null, null, null);
-        }
-        public static TableSelectResult success(String tableId, String tableName) {
-            return new TableSelectResult(State.SUCCESS, tableId, tableName, null);
-        }
-        public static TableSelectResult error(String message) {
-            return new TableSelectResult(State.ERROR, null, null, message);
-        }
+        public static TableSelectResult loading() { return new TableSelectResult(State.LOADING, null, null, null); }
+        public static TableSelectResult success(String id, String name) { return new TableSelectResult(State.SUCCESS, id, name, null); }
+        public static TableSelectResult error(String msg) { return new TableSelectResult(State.ERROR, null, null, msg); }
     }
 }

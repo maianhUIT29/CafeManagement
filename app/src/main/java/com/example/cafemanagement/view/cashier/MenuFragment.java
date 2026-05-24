@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cafemanagement.R;
 import com.example.cafemanagement.helper.CartManager;
 import com.example.cafemanagement.helper.FirebaseHelper;
-import com.example.cafemanagement.view.CashierActivity;
 import com.example.cafemanagement.view.cashier.adapter.CategoryTabAdapter;
 import com.example.cafemanagement.view.cashier.adapter.ProductGridAdapter;
 import com.example.cafemanagement.viewmodel.MenuViewModel;

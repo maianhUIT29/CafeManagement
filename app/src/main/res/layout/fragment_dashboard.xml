@@ -37,11 +37,27 @@
 
             </LinearLayout>
 
+            <!-- Nút đăng xuất mới -->
             <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:id="@+id/btn_logout_dashboard"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_logout"
+                app:tint="@color/accent_brown"
+                android:contentDescription="Đăng xuất"
+                android:layout_marginEnd="8dp" />
+
+            <ImageButton
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_notification"
+                app:tint="@color/text_secondary"
                 android:contentDescription="Thông báo" />
         </LinearLayout>
 

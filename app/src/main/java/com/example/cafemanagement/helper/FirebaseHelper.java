@@ -40,16 +40,6 @@ public class FirebaseHelper {
     public static FirebaseDatabase getDatabaseInstance() {
         if (database == null) {
             database = FirebaseDatabase.getInstance(DATABASE_URL);
-public class FirebaseHelper {
-
-    private static final String DATABASE_URL =
-            "https://cafemanagement-5e518-default-rtdb.asia-southeast1.firebasedatabase.app/";
-
-    public static FirebaseDatabase getDatabaseInstance() {
-        return FirebaseDatabase.getInstance(DATABASE_URL);
-        if (mDatabase == null) {
-            mDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
-            // ĐÃ XÓA LỆNH setPersistenceEnabled Ở ĐÂY
         }
         return database;
     }
@@ -82,16 +72,6 @@ public class FirebaseHelper {
         return getDatabaseInstance().getReference("Users");
     }
 
-    public static DatabaseReference getTablesRef() {
-        return getDatabaseInstance().getReference("Tables");
-    }
-
-    public static void logDatabaseError(String source, DatabaseError error) {
-        if (error != null) {
-            Log.e(TAG, source + " — " + error.getCode() + ": " + error.getMessage());
-        }
-    }
-}
     public static DatabaseReference getShiftConfigRef() {
         return getDatabaseInstance().getReference("ShiftConfig");
     }
@@ -100,5 +80,11 @@ public class FirebaseHelper {
     // Key = cashierId, mỗi cashier chỉ có 1 ca tại 1 thời điểm
     public static DatabaseReference getActiveShiftsRef() {
         return getDatabaseInstance().getReference("ActiveShifts");
+    }
+
+    public static void logDatabaseError(String source, DatabaseError error) {
+        if (error != null) {
+            Log.e(TAG, source + " — " + error.getCode() + ": " + error.getMessage());
+        }
     }
 }

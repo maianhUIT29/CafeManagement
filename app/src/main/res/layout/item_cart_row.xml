@@ -57,15 +57,18 @@
 
             <ImageButton
                 android:id="@+id/btn_qty_minus"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
                 android:background="@drawable/bg_qty_btn"
                 android:src="@drawable/ic_minus"
+                app:tint="@color/accent_brown"
                 android:contentDescription="Giảm" />
 
             <TextView
                 android:id="@+id/tv_item_qty"
-                android:layout_width="32dp"
+                android:layout_width="36dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="1"
@@ -75,10 +78,13 @@
 
             <ImageButton
                 android:id="@+id/btn_qty_plus"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
                 android:background="@drawable/bg_qty_btn"
                 android:src="@drawable/ic_plus"
+                app:tint="@color/accent_brown"
                 android:contentDescription="Tăng" />
         </LinearLayout>
     </LinearLayout>
