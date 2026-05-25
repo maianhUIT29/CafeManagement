@@ -65,6 +65,13 @@ public class CustomerCheckoutActivity extends AppCompatActivity {
         observeViewModel();
 
         loadRealCart();
+        viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
+
+// Truyền thông tin bàn từ Intent (do CustomerOrderSetupActivity gửi qua CustomerMainActivity)
+        boolean isDineIn  = getIntent().getBooleanExtra("IS_DINE_IN", false);
+        String  tableId   = getIntent().getStringExtra("TABLE_ID");
+        String  tableName = getIntent().getStringExtra("TABLE_NAME");
+        viewModel.setOrderContext(isDineIn, tableId, tableName);
     }
 
     private void initViews() {
@@ -141,10 +148,9 @@ public class CustomerCheckoutActivity extends AppCompatActivity {
     }
 
     private void navigateToStatus(String orderId) {
-        Intent intent = new Intent(CustomerCheckoutActivity.this, CustomerMainActivity.class);
+        Intent intent = new Intent(CustomerCheckoutActivity.this, CustomerOrderStatusActivity.class);
         intent.putExtra("ORDER_ID", orderId);
-        intent.putExtra("NAVIGATE_TO", "ORDER_STATUS");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
@@ -200,9 +206,13 @@ public class CustomerCheckoutActivity extends AppCompatActivity {
         VNP_AuthenticationActivity.setSdkCompletedCallback(action -> {
             runOnUiThread(() -> {
                 if ("SuccessBackAction".equals(action)) {
-                    navigateToStatus("VNP" + txnRef);
+                    // LƯU đơn hàng TRƯỚC khi navigate
+                    viewModel.processOnlinePaymentSuccess("VNPAY", orderId -> {
+                        navigateToStatus("VNP" + txnRef);
+                    });
                 } else if ("FaildBackAction".equals(action)) {
-                    Toast.makeText(CustomerCheckoutActivity.this, "Giao dịch thất bại", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CustomerCheckoutActivity.this,
+                            "Giao dịch thất bại", Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -219,8 +229,13 @@ public class CustomerCheckoutActivity extends AppCompatActivity {
                 String token = data.getString("zptranstoken");
                 ZaloPaySDK.getInstance().payOrder(CustomerCheckoutActivity.this, token, "demozpdk://app", new PayOrderListener() {
                     @Override
-                    public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
-                        runOnUiThread(() -> navigateToStatus("ZLP" + appTransID));
+                    public void onPaymentSucceeded(String transactionId, String transToken, String appTransID) {
+                        runOnUiThread(() -> {
+                            // LƯU đơn hàng TRƯỚC khi navigate
+                            viewModel.processOnlinePaymentSuccess("ZALOPAY", orderId -> {
+                                navigateToStatus("ZLP" + appTransID);
+                            });
+                        });
                     }
                     @Override public void onPaymentCanceled(String zpTransToken, String appTransID) {}
                     @Override public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {}

@@ -17,7 +17,7 @@ import com.example.cafemanagement.databinding.ActivityLoginBinding;
 import com.example.cafemanagement.view.admin.AdminActivity;
 import com.example.cafemanagement.view.barista.BaristaActivity;
 import com.example.cafemanagement.view.cashier.CashierActivity;
-import com.example.cafemanagement.view.customer.CustomerOrderSetupActivity;
+import com.example.cafemanagement.view.customer.CustomerMainActivity;
 import com.example.cafemanagement.viewmodel.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                 intent = new Intent(this, BaristaActivity.class);
                 break;
             default:
-                intent = new Intent(this, CustomerOrderSetupActivity.class);
+                intent = new Intent(this, CustomerMainActivity.class);
                 break;
         }
         startActivity(intent);

@@ -278,6 +278,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/txtStep3Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đã giao món"
@@ -285,6 +286,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txtStep3Desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sẵn sàng để thưởng thức."

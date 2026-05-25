@@ -107,10 +107,10 @@ public class CustomerBasketFragment extends Fragment {
     private void setupListeners(View view) {
         // Nút quay lại
         view.findViewById(R.id.btnBack).setOnClickListener(v -> {
-            if (getActivity() instanceof CustomerMainActivity) {
-                ((CustomerMainActivity) getActivity()).findViewById(R.id.nav_menu).performClick();
+            if (getParentFragment() != null) {
+                getParentFragment().getChildFragmentManager().popBackStack();
             }
-        });
+        });;
 
         // Nút Xóa tất cả
         btnClearAll.setOnClickListener(v -> showClearAllDialog());
@@ -120,11 +120,16 @@ public class CustomerBasketFragment extends Fragment {
             if (basketList.isEmpty()) {
                 Toast.makeText(getContext(), "Giỏ hàng đang trống!", Toast.LENGTH_SHORT).show();
             } else {
-                // Chuyển sang màn hình Checkout
                 Intent intent = new Intent(getContext(), CustomerCheckoutActivity.class);
+                if (getActivity() instanceof CustomerMainActivity) {
+                    CustomerMainActivity main = (CustomerMainActivity) getActivity();
+                    intent.putExtra("IS_DINE_IN", main.isDineIn());
+                    intent.putExtra("TABLE_ID",   main.getTableId());
+                    intent.putExtra("TABLE_NAME", main.getTableName());
+                }
                 startActivity(intent);
             }
-        });
+        });;
     }
 
     /**

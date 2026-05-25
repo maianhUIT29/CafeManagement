@@ -78,18 +78,18 @@ public class CustomerMenuFragment extends Fragment {
      */
     private void setupListeners() {
         // Sự kiện chuyển màn hình khi bấm vào toàn bộ thanh giỏ hàng
+        // Trong setupListeners(), thay sự kiện layoutCartBar:
         layoutCartBar.setOnClickListener(v -> {
-            // ĐÃ SỬA: Chuyển tab sang Giỏ hàng thông qua BottomNavigationView của MainActivity
-            if (getActivity() instanceof CustomerMainActivity) {
-                CustomerMainActivity activity = (CustomerMainActivity) getActivity();
-                activity.findViewById(R.id.nav_cart).performClick();
+            if (getParentFragment() instanceof CustomerOrderingTabFragment) {
+                ((CustomerOrderingTabFragment) getParentFragment()).showBasket();
             }
         });
 
-        // Sự kiện bấm vào thông tin dịch vụ (Bàn/Mang về) để đổi lại
+// Thay sự kiện txtServiceInfo (đổi bàn):
         txtServiceInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), CustomerOrderSetupActivity.class);
-            startActivity(intent);
+            if (getParentFragment() instanceof CustomerOrderingTabFragment) {
+                ((CustomerOrderingTabFragment) getParentFragment()).showSetup();
+            }
         });
     }
 

@@ -2,90 +2,105 @@ package com.example.cafemanagement.view.customer;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.cafemanagement.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class CustomerMainActivity extends AppCompatActivity {
 
-    private BottomNavigationView bottomNavCustomer;
+    // Thông tin bàn — được set sau khi user chọn xong trong Tab Đặt hàng
+    private boolean isDineIn  = false;
+    private String  tableId   = null;
+    private String  tableName = null;
+
+    public boolean isDineIn()     { return isDineIn; }
+    public String  getTableId()   { return tableId; }
+    public String  getTableName() { return tableName; }
+
+    public void setOrderContext(boolean isDineIn, String tableId, String tableName) {
+        this.isDineIn  = isDineIn;
+        this.tableId   = tableId;
+        this.tableName = tableName;
+    }
+
+    private ViewPager2 viewPager;
+
+    public void navigateToTab(int index) {
+        if (viewPager != null) viewPager.setCurrentItem(index, true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_main);
 
-        bottomNavCustomer = findViewById(R.id.bottomNavCustomer);
+        TabLayout tabLayout = findViewById(R.id.tabLayoutCustomer);
+        viewPager = findViewById(R.id.viewPagerCustomer);
 
-        // Lắng nghe sự kiện người dùng bấm vào thanh điều hướng
-        bottomNavCustomer.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+        viewPager.setAdapter(new CustomerPageAdapter(this));
+        viewPager.setUserInputEnabled(false);
 
-            if (itemId == R.id.nav_menu) {
-                replaceFragment(new CustomerMenuFragment());
-                return true;
-            } else if (itemId == R.id.nav_cart) {
-                replaceFragment(new CustomerBasketFragment());
-                return true;
-            } else if (itemId == R.id.nav_history) {
-                replaceFragment(new CustomerOrderStatusFragment());
-                return true;
-            } else if (itemId == R.id.nav_points) {
-                replaceFragment(new CustomerPointsFragment());
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                replaceFragment(new CustomerProfileFragment());
-                return true;
-            }
+        new TabLayoutMediator(tabLayout, viewPager, (tab, pos) -> {
+            if      (pos == 0) tab.setText("🛒 Đặt hàng");
+            else if (pos == 1) tab.setText("📋 Đơn hàng");
+            else               tab.setText("👤 Tài khoản");
+        }).attach();
 
-            return false;
-        });
-
-        // Kiểm tra tín hiệu Intent để điều hướng nếu quay về từ màn hình thanh toán
-        handleIntent(getIntent(), savedInstanceState);
+        // Nếu quay về từ checkout → chuyển sang tab Đơn hàng
+        handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        handleIntent(intent, null);
+        handleIntent(intent);
     }
 
-    private void handleIntent(Intent intent, Bundle savedInstanceState) {
-        // Kiểm tra chính xác cờ tín hiệu điều hướng
-        if (intent != null && "ORDER_STATUS".equals(intent.getStringExtra("NAVIGATE_TO"))) {
-            String orderId = intent.getStringExtra("ORDER_ID");
+    private void handleIntent(Intent intent) {
+        if (intent == null) return;
 
-            // Xóa cờ tín hiệu ngay lập tức để chống lỗi lặp vòng đời màn hình
-            intent.removeExtra("NAVIGATE_TO");
+        String navigateTo = intent.getStringExtra("NAVIGATE_TO");
+        if (navigateTo == null) return;
 
-            // BƯỚC 1: Cập nhật giao diện thanh điều hướng trước
-            bottomNavCustomer.setSelectedItemId(R.id.nav_history);
+        switch (navigateTo) {
+            case "ORDER_STATUS":
+                intent.removeExtra("NAVIGATE_TO");
+                viewPager.setCurrentItem(1, true);
+                break;
 
-            // BƯỚC 2: Khởi tạo mảnh ghép chứa dữ liệu và đè lên mảnh ghép rỗng
-            CustomerOrderStatusFragment fragment = new CustomerOrderStatusFragment();
-            Bundle args = new Bundle();
-            args.putString("ORDER_ID", orderId);
-            fragment.setArguments(args);
-
-            replaceFragment(fragment);
-
-        } else if (savedInstanceState == null) {
-            // Khởi tạo mảnh ghép mặc định khi ứng dụng vừa khởi động
-            bottomNavCustomer.setSelectedItemId(R.id.nav_menu);
+            case "ORDER_SETUP":
+                intent.removeExtra("NAVIGATE_TO");
+                // Chuyển về tab Đặt hàng và reset về màn hình chọn bàn
+                viewPager.setCurrentItem(0, true);
+                viewPager.post(() -> {
+                    CustomerOrderingTabFragment tab =
+                            (CustomerOrderingTabFragment) getSupportFragmentManager()
+                                    .findFragmentByTag("f0"); // ViewPager2 dùng tag "f{index}"
+                    if (tab != null) tab.showSetup();
+                });
+                break;
         }
     }
 
-    // Hàm chức năng cốt lõi hoán đổi mảnh ghép giao diện an toàn
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
-        fragmentTransaction.commit();
+    static class CustomerPageAdapter extends FragmentStateAdapter {
+        CustomerPageAdapter(FragmentActivity fa) { super(fa); }
+
+        @Override public int getItemCount() { return 3; }
+
+        @NonNull @Override
+        public Fragment createFragment(int position) {
+            if (position == 0) return new CustomerOrderingTabFragment();
+            if (position == 1) return new CustomerOrderStatusFragment();
+            return new CustomerAccountTabFragment();
+        }
     }
 }
