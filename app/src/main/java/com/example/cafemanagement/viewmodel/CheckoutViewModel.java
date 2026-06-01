@@ -1,5 +1,7 @@
 package com.example.cafemanagement.viewmodel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -52,64 +54,64 @@ public class CheckoutViewModel extends ViewModel {
         paymentMethodLiveData.setValue(method);
     }
 
-    // ── Xử lý thanh toán ─────────────────────────────────────────────────────
+    /**
+     * Hàm xử lý luồng thanh toán Tiền mặt.
+     */
     public void processPayment() {
         String method = paymentMethodLiveData.getValue();
         if ("CASH".equals(method)) {
             isLoading.setValue(true);
-            saveOrderToFirebase(method, orderId -> {
-                isLoading.setValue(false);
+            saveOrderToFirebase("CASH", orderId -> {
                 paymentUrl.setValue("SUCCESS_CASH");
-                BasketManager.getInstance().getBasketItems().clear();
+                isLoading.setValue(false);
             });
         }
     }
 
     /**
-     * Gọi sau khi thanh toán online thành công (VNPAY / ZaloPay).
-     * Activity gọi hàm này rồi tự navigate.
+     * Gọi sau khi thanh toán Online thành công từ Activity
      */
-    public void processOnlinePaymentSuccess(String method, OnOrderSavedCallback callback) {
-        saveOrderToFirebase(method, callback);
-        BasketManager.getInstance().getBasketItems().clear();
+    public void processOnlinePaymentSuccess(String paymentMethod, OnOrderSavedCallback callback) {
+        isLoading.setValue(true);
+        saveOrderToFirebase(paymentMethod, callback);
     }
 
-    // ── Lưu đơn hàng vào Firebase ────────────────────────────────────────────
     private void saveOrderToFirebase(String paymentMethod, OnOrderSavedCallback callback) {
-        DatabaseReference ordersRef = FirebaseHelper.getOrdersRef();
-        String orderId = ordersRef.push().getKey();
-        if (orderId == null) {
-            errorMessage.setValue("Không thể tạo đơn hàng. Vui lòng thử lại.");
+        List<CartItemModel> cartItems = cartItemsLiveData.getValue();
+        if (cartItems == null || cartItems.isEmpty()) {
+            errorMessage.setValue("Giỏ hàng trống");
             isLoading.setValue(false);
             return;
         }
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String customerId   = user != null ? user.getUid()          : "guest";
-        String customerName = user != null ? user.getDisplayName()  : "Khách";
-
-        // Build items map từ BasketManager
-        Map<String, OrderItemModel> itemsMap = new HashMap<>();
-        List<BasketItemModel> basketItems = BasketManager.getInstance().getBasketItems();
-        int subtotal = 0;
-
-        for (int i = 0; i < basketItems.size(); i++) {
-            BasketItemModel b = basketItems.get(i);
-            int unitPrice = (int) Math.round(b.getPrice());
-            OrderItemModel oi = new OrderItemModel(
-                    "",                          // productId (không có trong BasketItemModel)
-                    b.getProductName(),
-                    unitPrice,
-                    unitPrice,                   // finalPrice = basePrice (không có topping delta)
-                    b.getQuantity(),
-                    b.getOptionsDisplay(),        // size/options
-                    100, 100,                    // sugar, ice – mặc định (BasketItemModel không lưu)
-                    null,
-                    ""
-            );
-            subtotal += oi.getSubtotal();
-            itemsMap.put("item_" + i, oi);
+        DatabaseReference ordersRef = FirebaseHelper.getOrdersRef();
+        String orderId = ordersRef.push().getKey();
+        if (orderId == null) {
+            errorMessage.setValue("Không thể tạo ID đơn hàng");
+            isLoading.setValue(false);
+            return;
         }
+
+        // Chuyển đổi CartItem sang OrderItem để lưu vào Firebase
+        Map<String, OrderItemModel> itemsMap = new HashMap<>();
+        for (CartItemModel item : cartItems) {
+            OrderItemModel oItem = new OrderItemModel();
+            oItem.setProductId(item.getProductId());
+            oItem.setProductName(item.getProductName());
+            oItem.setBasePrice((int) item.getBasePrice());
+            int quantity = Math.max(item.getQuantity(), 1);
+            oItem.setFinalPrice((int) (item.getTotalPrice() / quantity));
+            oItem.setQuantity(item.getQuantity());
+            oItem.setSize(item.getSize());
+            oItem.setNote(item.getNote());
+            // Dùng một key ngẫu nhiên cho mỗi item trong map
+            itemsMap.put(ordersRef.push().getKey(), oItem);
+        }
+
+        double subtotalValue = subtotalLiveData.getValue() != null ? subtotalLiveData.getValue() : 0.0;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String customerId = user != null ? user.getUid() : "GUEST";
+        String customerName = user != null ? (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) : "Guest";
 
         // Build OrderModel
         OrderModel order = new OrderModel();
@@ -120,9 +122,9 @@ public class CheckoutViewModel extends ViewModel {
         order.setTableId(pendingIsDineIn   ? pendingTableId   : null);
         order.setTableName(pendingIsDineIn ? pendingTableName : null);
         order.setItems(itemsMap);
-        order.setSubtotal(subtotal);
+        order.setSubtotal((int) subtotalValue);
         order.setDiscountAmount(0);
-        order.setTotal(subtotal);
+        order.setTotal((int) subtotalValue);
         order.setPaymentMethod(paymentMethod);
         order.setStatus(OrderModel.STATUS_PREPARING);   // ← Barista lắng nghe status này
         order.setCreatedAt(System.currentTimeMillis());
