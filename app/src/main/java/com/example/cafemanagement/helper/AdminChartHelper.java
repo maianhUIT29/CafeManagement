@@ -1,8 +1,8 @@
 package com.example.cafemanagement.helper;
 
-import com.example.cafemanagement.view.chart.DashboardBarChartView;
-import com.example.cafemanagement.view.chart.DashboardLineChartView;
-import com.example.cafemanagement.view.chart.DashboardPieChartView;
+import com.example.cafemanagement.view.admin.chart.DashboardBarChartView;
+import com.example.cafemanagement.view.admin.chart.DashboardLineChartView;
+import com.example.cafemanagement.view.admin.chart.DashboardPieChartView;
 
 import java.util.List;
 

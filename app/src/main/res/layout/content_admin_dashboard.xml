@@ -270,7 +270,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <com.example.cafemanagement.view.chart.DashboardLineChartView
+                    <com.example.cafemanagement.view.admin.chart.DashboardLineChartView
                         android:id="@+id/chartWeeklyRevenue"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
@@ -302,7 +302,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <com.example.cafemanagement.view.chart.DashboardBarChartView
+                    <com.example.cafemanagement.view.admin.chart.DashboardBarChartView
                         android:id="@+id/chartProductsByCategory"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
@@ -338,7 +338,7 @@
                             android:text="Bàn"
                             android:textColor="@color/coffee_dark"
                             android:textStyle="bold" />
-                        <com.example.cafemanagement.view.chart.DashboardPieChartView
+                        <com.example.cafemanagement.view.admin.chart.DashboardPieChartView
                             android:id="@+id/chartTableStatus"
                             android:layout_width="match_parent"
                             android:layout_height="160dp"
@@ -366,7 +366,7 @@
                             android:text="Nhân sự"
                             android:textColor="@color/coffee_dark"
                             android:textStyle="bold" />
-                        <com.example.cafemanagement.view.chart.DashboardBarChartView
+                        <com.example.cafemanagement.view.admin.chart.DashboardBarChartView
                             android:id="@+id/chartStaffByRole"
                             android:layout_width="match_parent"
                             android:layout_height="160dp"

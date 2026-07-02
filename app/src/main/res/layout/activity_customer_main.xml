@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- ViewPager chiếm hết không gian còn lại -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerCustomer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Tab bar cố định ở dưới cùng -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutCustomer"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#3E2723"
+        android:elevation="8dp"
+        app:tabSelectedTextColor="#FFD54F"
+        app:tabTextColor="#BCAAA4"
+        app:tabIndicatorColor="#FFD54F"
+        app:tabIndicatorHeight="3dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabPaddingBottom="8dp"
+        app:tabPaddingTop="8dp"/>
+
+</LinearLayout>

@@ -48,23 +48,38 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.TableViewHol
     @Override
     public void onBindViewHolder(@NonNull TableViewHolder holder, int position) {
         TableModel table = tableList.get(position);
-        holder.txtTableName.setText(table.getName().replace("Bàn ", ""));
+        if (table == null) return;
 
-        boolean isOccupied = "OCCUPIED".equals(table.getStatus());
-        boolean isSelected = selectedTable != null && selectedTable.getTableId().equals(table.getTableId());
+        // CẬP NHẬT: Sử dụng đúng ID từ item_table.xml (tv_table_name)
+        String name = table.getName() != null ? table.getName() : "Bàn " + (position + 1);
+        holder.tv_table_name.setText(name.replace("Bàn ", ""));
 
+        String status = table.getStatus() != null ? table.getStatus() : "AVAILABLE";
+        boolean isOccupied = "OCCUPIED".equalsIgnoreCase(status);
+        
+        // Hiển thị trạng thái text (tv_table_status)
+        if (holder.tv_table_status != null) {
+            holder.tv_table_status.setText(isOccupied ? "Đang dùng" : "Trống");
+        }
+
+        boolean isSelected = false;
+        if (selectedTable != null && selectedTable.getTableId() != null && table.getTableId() != null) {
+            isSelected = selectedTable.getTableId().equals(table.getTableId());
+        }
+
+        // Đổi màu nền dựa trên trạng thái
         if (isOccupied) {
             holder.cardTable.setCardBackgroundColor(Color.parseColor("#E0E0E0"));
-            holder.txtTableName.setTextColor(Color.parseColor("#9E9E9E"));
-            holder.itemView.setEnabled(false);
+            holder.tv_table_name.setTextColor(Color.parseColor("#9E9E9E"));
+            if (holder.tv_table_status != null) holder.tv_table_status.setTextColor(Color.parseColor("#9E9E9E"));
         } else if (isSelected) {
             holder.cardTable.setCardBackgroundColor(Color.parseColor("#FFD54F"));
-            holder.txtTableName.setTextColor(Color.parseColor("#3E2723"));
-            holder.itemView.setEnabled(true);
+            holder.tv_table_name.setTextColor(Color.parseColor("#3E2723"));
+            if (holder.tv_table_status != null) holder.tv_table_status.setTextColor(Color.parseColor("#3E2723"));
         } else {
             holder.cardTable.setCardBackgroundColor(Color.parseColor("#F1F8E9"));
-            holder.txtTableName.setTextColor(Color.parseColor("#7CB342"));
-            holder.itemView.setEnabled(true);
+            holder.tv_table_name.setTextColor(Color.parseColor("#7CB342"));
+            if (holder.tv_table_status != null) holder.tv_table_status.setTextColor(Color.parseColor("#7CB342"));
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -81,12 +96,14 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.TableViewHol
 
     static class TableViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardTable;
-        TextView txtTableName;
+        TextView tv_table_name, tv_table_status;
 
         public TableViewHolder(@NonNull View itemView) {
             super(itemView);
+            // SỬA LỖI ID: Ánh xạ đúng các ID trong item_table.xml
             cardTable = itemView.findViewById(R.id.cardTable);
-            txtTableName = itemView.findViewById(R.id.txtTableName);
+            tv_table_name = itemView.findViewById(R.id.tv_table_name);
+            tv_table_status = itemView.findViewById(R.id.tv_table_status);
         }
     }
 }

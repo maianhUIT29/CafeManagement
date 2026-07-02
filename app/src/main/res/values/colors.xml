@@ -7,7 +7,7 @@
     <color name="coffee_accent">#FFD54F</color>
     <color name="coffee_bg">#F8F9FA</color>
     <color name="coffee_card">#FFFFFF</color>
-    <color name="text_secondary">#8D6E63</color>
+
     
     <!-- Modern Admin Colors -->
     <color name="admin_bg">#F8F9FA</color>
@@ -39,4 +39,36 @@
     
     <color name="header_subtitle">#E0E0E0</color>
     <color name="chart_grid">#F0F0F0</color>
+
+    <!-- Backgrounds -->
+    <color name="bg_main">#F5F0EB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="divider">#E8E0D8</color>
+
+    <!-- Brand -->
+    <color name="accent_brown">#5C3D2E</color>
+    <color name="accent_brown_light">#8B6355</color>
+    <color name="accent_yellow">#F0B429</color>
+    <color name="accent_yellow_dark">#D99B0F</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1A1209</color>
+    <color name="text_secondary">#7A6658</color>
+
+
+    <!-- Status -->
+    <color name="green_success">#2D9B5A</color>
+    <color name="red_error">#D94F4F</color>
+    <color name="orange_warning">#F07D28</color>
+
+    <!-- Table status -->
+    <color name="table_available">#FFFFFF</color>
+    <color name="table_occupied">#FFF3E0</color>
+    <color name="table_selected">#5C3D2E</color>
+
+    <!-- Chip -->
+    <color name="chip_checked">#5C3D2E</color>
+    <color name="chip_unchecked">#F0E8E0</color>
+    <color name="chip_text_checked">#FFFFFF</color>
+    <color name="chip_text_unchecked">#5C3D2E</color>
 </resources>

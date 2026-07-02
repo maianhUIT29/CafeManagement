@@ -52,12 +52,34 @@ public class FirebaseHelper {
         return getDatabaseInstance().getReference("Products");
     }
 
+    public static DatabaseReference getTablesRef() {
+        return getDatabaseInstance().getReference("Tables");
+    }
+
+    public static DatabaseReference getOrdersRef() {
+        return getDatabaseInstance().getReference("Orders");
+    }
+
+    public static DatabaseReference getVouchersRef() {
+        return getDatabaseInstance().getReference("Vouchers");
+    }
+
+    public static DatabaseReference getHistoryRevenueRef() {
+        return getDatabaseInstance().getReference("HistoryRevenue");
+    }
+
     public static DatabaseReference getUsersRef() {
         return getDatabaseInstance().getReference("Users");
     }
 
-    public static DatabaseReference getTablesRef() {
-        return getDatabaseInstance().getReference("Tables");
+    public static DatabaseReference getShiftConfigRef() {
+        return getDatabaseInstance().getReference("ShiftConfig");
+    }
+
+    // ── MỚI: Ca làm việc đang mở ──────────────────────────────────────────────
+    // Key = cashierId, mỗi cashier chỉ có 1 ca tại 1 thời điểm
+    public static DatabaseReference getActiveShiftsRef() {
+        return getDatabaseInstance().getReference("ActiveShifts");
     }
 
     public static void logDatabaseError(String source, DatabaseError error) {
